@@ -1,0 +1,22 @@
+undernote — Under-note annotation system for LuaLaTeX
+================================================
+
+Version: 1.0.0
+Date: 2025-10-11
+Author: Unknown
+
+Description:
+------------
+This package provides the command \undernote for attaching short annotations
+beneath words or phrases in the main text, connected by a ruled line.
+It is especially useful for vertical Japanese typesetting using LuaLaTeX-ja,
+but it also works in horizontal text.
+
+Dependencies:
+-------------
+kvoptions, varwidth
+
+Source:
+-------
+https://oku.edu.mie-u.ac.jp/tex/mod/forum/discuss.php?d=3406
+https://x.com/doraTeX/status/1544320679436517378

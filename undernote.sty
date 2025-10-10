@@ -167,8 +167,9 @@
 
 \newlength{\undernote@textlen@tempo}
 \NewDocumentCommand{\wrap@undernote@par}{ +m }{%
-   \parbox[t]{\dimexpr\undernote@textlen@tempo - \noterulehsize - \noterulehshift - 1em\relax}{#1}
-}
+{%
+   \parbox[t]{\dimexpr\undernote@textlen@tempo - \noterulehsize - \noterulehshift +3em\relax}{\setlength{\parindent}{1em}#1}
+}}
 
 \newbox\@note@maintext
 \newbox\@note@subtext
