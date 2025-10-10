@@ -1,8 +1,5 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% undernote.sty — Under-note annotation system for LuaLaTeX
-%% This package is under development since internal macro (\wrap@undernote@par) 
-%% in thrid arguments of \undernote causes an critical error when the input
-%% includes \par or a blank line.
 %% 
 %% Version: 1.0.0 (2025/10/10)
 %% Source : https://oku.edu.mie-u.ac.jp/tex/mod/forum/discuss.php?d=3406
@@ -47,12 +44,7 @@
 %% Notes on Content
 %% -----------------------------------------------------------------------------
 %% - The 4th argument (note text) is placed inside a varwidth environment.
-%% - Do **not** include paragraph breaks (blank lines or \par) inside the note.
-%%   NOW, ONLY SINGLE PAR notes are supported. 
-%%   (This problem is now being scrutinized.)
-%%   So now, use \\ for line breaks instead of empty lines.
-%% - If you need multiple paragraphs, consider wrapping the note text in an
-%%   environment or modify the definition using a +b-type argument.
+%% - You can include multi-par text in the arguments when you add star op.
 %%
 %% -----------------------------------------------------------------------------
 %% Package Options
@@ -219,7 +211,7 @@
       {\@note@restore@counters\@text@note{#1}{\m@th$\textstyle #2$}{#3}}%
       {\@note@restore@counters\@text@note{#1}{\m@th$\scriptstyle #2$}{#3}}%
       {\@note@restore@counters\@text@note{#1}{\m@th$\scriptscriptstyle #2$}{#3}}}
-\def\@text@note#1#2#3{%
+\long\def\@text@note#1#2#3{%
    \hbox{%
       \def\@ND@vsize{#1}%
       \ifx\@ND@vsize\@empty
