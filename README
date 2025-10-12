@@ -1,7 +1,7 @@
 undernote — Under-note annotation system for LuaLaTeX
 ================================================
 
-Version: 1.0.2
+Version: 1.0.1
 Date: 2025-10-12
 Author: Unknown
 
@@ -16,7 +16,7 @@ Dependencies:
 -------------
 kvoptions, varwidth
 
-Source:
+Sources:
 -------
 https://oku.edu.mie-u.ac.jp/tex/mod/forum/discuss.php?d=3406
 https://x.com/doraTeX/status/1544320679436517378
