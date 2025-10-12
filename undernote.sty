@@ -1,7 +1,10 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% undernote.sty — Under-note annotation system for LuaLaTeX
+%% This package is under development since internal macro (\wrap@undernote@par) 
+%% in thrid arguments of \undernote causes an critical error when the input
+%% includes \par or a blank line.
 %% 
-%% Version: 1.0.0 (2025/10/10)
+%% Version: 1.0.1 (2025/10/12)
 %% Source : https://oku.edu.mie-u.ac.jp/tex/mod/forum/discuss.php?d=3406
 %%          https://x.com/doraTeX/status/1544320679436517378
 %%
@@ -44,7 +47,12 @@
 %% Notes on Content
 %% -----------------------------------------------------------------------------
 %% - The 4th argument (note text) is placed inside a varwidth environment.
-%% - You can include multi-par text in the arguments when you add star op.
+%% - Do **not** include paragraph breaks (blank lines or \par) inside the note.
+%%   NOW, ONLY SINGLE PAR notes are supported. 
+%%   (This problem is now being scrutinized.)
+%%   So now, use \\ for line breaks instead of empty lines.
+%% - If you need multiple paragraphs, consider wrapping the note text in an
+%%   environment or modify the definition using a +b-type argument.
 %%
 %% -----------------------------------------------------------------------------
 %% Package Options
@@ -57,6 +65,7 @@
 %%     noterulehshift=1.5mm,       % Horizontal offset of vertical line start
 %%     noterulehsize=1.5mm,        % Horizontal rule length
 %%     notesep=2em                 % Minimum vertical separation between notes
+%%%    noteoverhang=3em            % The value by which a \parbox protrudes to the right when using the star option.
 %%   ]{undernote}
 %%
 %% These can also be changed in the document using:
@@ -66,6 +75,7 @@
 %%   \SetUNotePos{<len>}
 %%   \SetUNoteShift{<len>}
 %%   \SetUNoteSep{<len>}
+%%%  \SetUNoteOverHang{<len>}
 %%
 %% -----------------------------------------------------------------------------
 %% Internals
@@ -121,6 +131,7 @@
 \DeclareStringOption[1.5mm]{noterulehshift}
 \DeclareStringOption[1.5mm]{noterulehsize}
 \DeclareStringOption[2em]{notesep}
+\DeclareStringOption[3em]{noteoverhang}
 \ProcessKeyvalOptions*
 
 
@@ -134,33 +145,38 @@
 \def\notesep{\undernote@notesep}%%% 前にある注釈が次の注釈の縦線から \notesep 以内に近づくようなら，
                                 %%% 前にある注釈を下にずらす（「2em」のように文字サイズに依存する
                                 %%% 指定をした場合は，\notesize（の，現在使用中のフォント）における値）
+\def\noteoverhang{\undernote@noteoverhang}
 
-\NewDocumentCommand{\SetUNoteSize}{O{.4pt}}{%
-  \setlength{\noteRuleThickness}{#1}%
+\NewDocumentCommand{\SetUNoteSize}{O{\footnotesize}}{%
+  \def\notesize{#1}
 }                 
 
 \NewDocumentCommand{\SetUNoteRuleThickness}{O{.4pt}}{%
-  \setlength{\noteRuleThickness}{#1}%
+  \def\noterulethickness{#1}%
 }
 
 \NewDocumentCommand{\SetUNoteRuleHShift}{O{1.5mm}}{%
-  \setlength{\noteRuleHShift}{#1}%
+  \def\noterulehshift{#1}%
 }
 
 \NewDocumentCommand{\SetUNoteRuleHSize}{O{1.5mm}}{%
-  \setlength{\noteRuleHSize}{#1}%
+  \def\noterulehsize{#1}%
 }
 
 \NewDocumentCommand{\SetUNotePos}{O{3mm}}{%
-  \setlength{\notePos}{#1}%
+  \def\notepos{#1}%
 }
 
 \NewDocumentCommand{\SetUNoteShift}{O{4mm}}{%
-  \setlength{\noteShift}{#1}%
+  \def\noteshift{#1}%
 }
 
 \NewDocumentCommand{\SetUNoteSep}{O{2em}}{%
-  \setlength{\noteSep}{#1}%
+  \def\notesep{#1}%
+}
+
+\NewDocumentCommand{\SetUNoteOverHang}{O{3em}}{%
+  \def\noteoverhang{#1}%
 }
 
 %%%
@@ -168,7 +184,7 @@
 \newlength{\undernote@textlen@tempo}
 \NewDocumentCommand{\wrap@undernote@par}{ +m }{%
 {%
-   \parbox[t]{\dimexpr\undernote@textlen@tempo - \noterulehsize - \noterulehshift +3em\relax}{\setlength{\parindent}{1em}#1}
+   \parbox[t]{\dimexpr\undernote@textlen@tempo - \noterulehsize - \noterulehshift + \noteoverhang\relax}{\setlength{\parindent}{1em}#1}
 }}
 
 \newbox\@note@maintext
