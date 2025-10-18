@@ -148,7 +148,7 @@
 \def\noteoverhang{\undernote@noteoverhang}
 
 \NewDocumentCommand{\SetUNoteSize}{O{\footnotesize}}{%
-  \def\notesize{#1}
+  \def\notesize{#1}%
 }                 
 
 \NewDocumentCommand{\SetUNoteRuleThickness}{O{.4pt}}{%
@@ -190,25 +190,26 @@
 \newbox\@note@maintext
 \newbox\@note@subtext
 \newcounter{noteid} \setcounter{noteid}{0}
-\DeclareDocumentCommand{\undernote}{ s O{} m +m }{%%% #1（star）注釈をparboxに包む，
-                                      %%% #2 (optinal): 注釈を下にずらす「行数」（与えない場合，自動設定），
-                                      %%% #3: 注釈をつける語句，#4: 注釈
-   \settowidth{\undernote@textlen@tempo}{#3}
-   \begingroup
+\DeclareDocumentCommand{\undernote}{ s O{} m +m }{%
+%%% #1（star）注釈をparboxに包む，
+%%% #2 (optinal): 注釈を下にずらす「行数」（与えない場合，自動設定），
+%%% #3: 注釈をつける語句，#4: 注釈
+   \settowidth{\undernote@textlen@tempo}{#3}%
+   \begingroup%
    \stepcounter{noteid}%
-   \ifmmode
-      \@note@save@conters
-      \savepos
-      \expandafter\@math@note
-   \else
-      \leavevmode
-      \savepos
-      \expandafter\@text@note
-   \fi
+   \ifmmode%
+      \@note@save@conters%
+      \savepos%
+      \expandafter\@math@note%
+   \else%
+      \leavevmode%
+      \savepos%
+      \expandafter\@text@note%
+   \fi%
    {#2}{#3}{%
-     \ifnum\ltjgetparameter{direction}=4
+     \ifnum\ltjgetparameter{direction}=4%
        \begin{varwidth}[t]{\maxdimen}\IfBooleanTF{#1}{\wrap@undernote@par{#4}}{#4}\end{varwidth}%
-     \else
+     \else%
        \raisebox{.38\zw}{\begin{varwidth}[t]{\maxdimen}\IfBooleanTF{#1}{\wrap@undernote@par{#4}}{#4}\end{varwidth}}%
      \fi%
      }%
