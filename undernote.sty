@@ -1,115 +1,5 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% undernote.sty — Under-note annotation system for LuaLaTeX
-%% This package is under development since internal macro (\wrap@undernote@par) 
-%% in thrid arguments of \undernote causes an critical error when the input
-%% includes \par or a blank line.
-%% 
-%% Version: 1.0.1 (2025/10/12)
-%% Source : https://oku.edu.mie-u.ac.jp/tex/mod/forum/discuss.php?d=3406
-%%          https://x.com/doraTeX/status/1544320679436517378
-%%
-%% -----------------------------------------------------------------------------
-%% Overview
-%% -----------------------------------------------------------------------------
-%% This package provides the command \undernote for attaching short annotations
-%% beneath words or phrases in the main text, connected by a ruled line.
-%% It is especially useful for vertical Japanese typesetting using LuaLaTeX-ja,
-%% but it also works in horizontal text.
-%%
-%% -----------------------------------------------------------------------------
-%% Requirements
-%% -----------------------------------------------------------------------------
-%% - This package can be compiled **only with LuaLaTeX**.
-%% - Requires: kvoptions, varwidth, ifluatex
-%% - Not compatible with pdfLaTeX or XeLaTeX.
-%%
-%% -----------------------------------------------------------------------------
-%% Basic Usage
-%% -----------------------------------------------------------------------------
-%%
-%%   \usepackage{undernote}
-%%
-%%   In the document body:
-%%     \undernote{word}{This is a short note below the word.}
-%%
-%%   Optional arguments:
-%%     \undernote*[<shift>]{word}{note}
-%%
-%%   where:
-%%     *   : Use a wrapped version of the note in a parbox (to control width)
-%%     <shift> : (integer) manually shift the note downward by N steps
-%%
-%% Example:
-%%   \undernote{TeX}{A typesetting system.}
-%%   \undernote*[2]{LuaLaTeX}{An extension of LaTeX using LuaTeX.}
-%%
-%% -----------------------------------------------------------------------------
-%% Notes on Content
-%% -----------------------------------------------------------------------------
-%% - The 4th argument (note text) is placed inside a varwidth environment.
-%% - Do **not** include paragraph breaks (blank lines or \par) inside the note.
-%%   NOW, ONLY SINGLE PAR notes are supported. 
-%%   (This problem is now being scrutinized.)
-%%   So now, use \\ for line breaks instead of empty lines.
-%% - If you need multiple paragraphs, consider wrapping the note text in an
-%%   environment or modify the definition using a +b-type argument.
-%%
-%% -----------------------------------------------------------------------------
-%% Package Options
-%% -----------------------------------------------------------------------------
-%%   \usepackage[
-%%     notesize=\footnotesize,     % Font size for note text
-%%     notepos=3mm,                % Minimum vertical line length
-%%     noteshift=4mm,              % Downward shift step for notes
-%%     noterulethickness=.4pt,     % Thickness of note rule lines
-%%     noterulehshift=1.5mm,       % Horizontal offset of vertical line start
-%%     noterulehsize=1.5mm,        % Horizontal rule length
-%%     notesep=2em                 % Minimum vertical separation between notes
-%%%    noteoverhang=3em            % The value by which a \parbox protrudes to the right when using the star option.
-%%   ]{undernote}
-%%
-%% These can also be changed in the document using:
-%%   \SetUNoteRuleThickness{<len>}
-%%   \SetUNoteRuleHShift{<len>}
-%%   \SetUNoteRuleHSize{<len>}
-%%   \SetUNotePos{<len>}
-%%   \SetUNoteShift{<len>}
-%%   \SetUNoteSep{<len>}
-%%%  \SetUNoteOverHang{<len>}
-%%
-%% -----------------------------------------------------------------------------
-%% Internals
-%% -----------------------------------------------------------------------------
-%% The implementation uses \savepos to record absolute positions of annotated
-%% text and draws connecting rules automatically. It relies on the .aux file
-%% to adjust overlapping annotations in multiple LaTeX runs.
-%%
-%% -----------------------------------------------------------------------------
-%% License and Acknowledgments
-%% -----------------------------------------------------------------------------
-%% This package is based on the original idea and code fragments shared by
-%% Tex Forum and doraTeX (see URLs above).
-%% Modified and extended by KKTeX to support package options and configuration
-%% interfaces.
-%%
-%% -----------------------------------------------------------------------------
-%% Limitations
-%% -----------------------------------------------------------------------------
-%% - Notes inside math mode are handled in a simplified way.
-%% - Paragraphs inside varwidth are not supported.
-%% - Overlapping annotations may require two compilations.
-%%
-%% -----------------------------------------------------------------------------
-%% Compilation
-%% -----------------------------------------------------------------------------
-%%   $ lualatex yourfile.tex
-%%   (Repeat twice to update note positions.)
-%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesPackage{undernote}[2025/10/10, Version 1.0.1]
+\ProvidesPackage{undernote}[2025/10/10, Version 1.0.2]
 
 \RequirePackage{ifluatex}
 \ifluatex\else
@@ -118,6 +8,7 @@
 
 \RequirePackage{kvoptions} 
 \RequirePackage{varwidth}
+\RequirePackage[most]{tcolorbox}
 
 \SetupKeyvalOptions{%
   family=undernote,%
@@ -132,6 +23,7 @@
 \DeclareStringOption[1.5mm]{noterulehsize}
 \DeclareStringOption[2em]{notesep}
 \DeclareStringOption[3em]{noteoverhang}
+\DeclareStringOption[0]{parstyle}
 \ProcessKeyvalOptions*
 
 
@@ -146,6 +38,8 @@
                                 %%% 前にある注釈を下にずらす（「2em」のように文字サイズに依存する
                                 %%% 指定をした場合は，\notesize（の，現在使用中のフォント）における値）
 \def\noteoverhang{\undernote@noteoverhang}
+
+\def\noteparstyle{\undernote@parstyle}
 
 \NewDocumentCommand{\SetUNoteSize}{O{\footnotesize}}{%
   \def\notesize{#1}%
@@ -181,11 +75,63 @@
 
 %%%
 
+
+\DeclareTotalTCBox{\FramedBox@undernote}{ O{} m }{%
+  on line,arc=0pt,
+  sharp corners,boxsep=0mm,
+  left=.3mm,right=.3mm,top=0.3mm,bottom=0.3mm,
+  colback=white,colframe=white,
+  enhanced,before={\hspace*{-.4ex}},
+  borderline={\noterulethickness}{0mm}{solid},
+  #1
+}{#2}
+
+
+\DeclareTotalTCBox{\DashedBox@undernote}{ O{} m }{%
+  on line,arc=0pt,
+  sharp corners,boxsep=0mm,
+  left=.3mm,right=.3mm,top=0.3mm,bottom=0.3mm,
+  colback=white,colframe=white,
+  enhanced,before={\hspace*{-.4ex}},
+  borderline={\noterulethickness}{0mm}{dashed},
+  #1
+}{#2}
+
+
 \newlength{\undernote@textlen@tempo}
+
+\NewDocumentCommand{\wrap@undernote@par@styleA}{ +m }{%
+{%
+   \FramedBox@undernote{\parbox[t]{\dimexpr\undernote@textlen@tempo - \noterulehsize - \noterulehshift + \noteoverhang\relax}{\setlength{\baselineskip}{.5ex}\setlength{\parindent}{1em}#1}}
+}}
+
+\NewDocumentCommand{\wrap@undernote@par@styleB}{ +m }{%
+{%
+   \DashedBox@undernote{\parbox[t]{\dimexpr\undernote@textlen@tempo - \noterulehsize - \noterulehshift + \noteoverhang\relax}{\setlength{\baselineskip}{.5ex}\setlength{\parindent}{1em}#1}}
+}}
+
 \NewDocumentCommand{\wrap@undernote@par}{ +m }{%
 {%
-   \parbox[t]{\dimexpr\undernote@textlen@tempo - \noterulehsize - \noterulehshift + \noteoverhang\relax}{\setlength{\parindent}{1em}#1}
+   \parbox[t]{\dimexpr\undernote@textlen@tempo - \noterulehsize - \noterulehshift + \noteoverhang\relax}{\setlength{\baselineskip}{.5ex}\setlength{\parindent}{1em}#1}
 }}
+
+\NewDocumentCommand{\wrap@undernote@styleA}{ +m }{{\FramedBox@undernote{#1}}}
+
+\NewDocumentCommand{\wrap@undernote@styleB}{ +m }{\DashedBox@undernote{#1}}
+
+\NewDocumentCommand{\wrap@undernote}{ +m }{{#1}}
+
+\ifnum\noteparstyle=1
+   \let\wrap@undernote\wrap@undernote@styleA
+\else\ifnum\noteparstyle=2
+   \let\wrap@undernote\wrap@undernote@styleB
+\fi\fi
+
+\ifnum\noteparstyle=1
+   \let\wrap@undernote@par\wrap@undernote@par@styleA
+\else\ifnum\noteparstyle=2
+   \let\wrap@undernote@par\wrap@undernote@par@styleB
+\fi\fi
 
 \newbox\@note@maintext
 \newbox\@note@subtext
@@ -208,9 +154,33 @@
    \fi%
    {#2}{#3}{%
      \ifnum\ltjgetparameter{direction}=4%
-       \begin{varwidth}[t]{\maxdimen}\IfBooleanTF{#1}{\wrap@undernote@par{#4}}{#4}\end{varwidth}%
+       \begin{varwidth}[t]{\maxdimen}\IfBooleanTF{#1}{\wrap@undernote@par{#4}}{\wrap@undernote{#4}}\end{varwidth}%
      \else%
-       \raisebox{.38\zw}{\begin{varwidth}[t]{\maxdimen}\IfBooleanTF{#1}{\wrap@undernote@par{#4}}{#4}\end{varwidth}}%
+       \raisebox{.38\zw}{\begin{varwidth}[t]{\maxdimen}\IfBooleanTF{#1}{\wrap@undernote@par{#4}}{\wrap@undernote{#4}}\end{varwidth}}%
+     \fi%
+     }%
+   \endgroup}
+\DeclareDocumentCommand{\undernotePlain}{ s O{} m +m }{% 下線なし
+%%% #1（star）注釈をparboxに包む，
+%%% #2 (optinal): 注釈を下にずらす「行数」（与えない場合，自動設定），
+%%% #3: 注釈をつける語句，#4: 注釈
+   \settowidth{\undernote@textlen@tempo}{#3}%
+   \begingroup%
+   \stepcounter{noteid}%
+   \ifmmode%
+      \@note@save@conters%
+      \savepos%
+      \expandafter\@math@notePlain%
+   \else%
+      \leavevmode%
+      \savepos%
+      \expandafter\@text@notePlain%
+   \fi%
+   {#2}{#3}{%
+     \ifnum\ltjgetparameter{direction}=4%
+       \begin{varwidth}[t]{\maxdimen}\IfBooleanTF{#1}{\wrap@undernote@par{#4}}{\wrap@undernote{#4}}\end{varwidth}%
+     \else%
+       \raisebox{.38\zw}{\begin{varwidth}[t]{\maxdimen}\IfBooleanTF{#1}{\wrap@undernote@par{#4}}{\wrap@undernote{#4}}\end{varwidth}}%
      \fi%
      }%
    \endgroup}
@@ -229,7 +199,54 @@
       {\@note@restore@counters\@text@note{#1}{\m@th$\textstyle #2$}{#3}}%
       {\@note@restore@counters\@text@note{#1}{\m@th$\scriptstyle #2$}{#3}}%
       {\@note@restore@counters\@text@note{#1}{\m@th$\scriptscriptstyle #2$}{#3}}}
+\def\@math@notePlain#1#2#3{%
+   \mathchoice
+      {\@note@restore@counters\@text@notePlain{#1}{\m@th$\displaystyle #2$}{#3}}%
+      {\@note@restore@counters\@text@notePlain{#1}{\m@th$\textstyle #2$}{#3}}%
+      {\@note@restore@counters\@text@notePlain{#1}{\m@th$\scriptstyle #2$}{#3}}%
+      {\@note@restore@counters\@text@notePlain{#1}{\m@th$\scriptscriptstyle #2$}{#3}}}
 \long\def\@text@note#1#2#3{%
+   \hbox{%
+      \def\@ND@vsize{#1}%
+      \ifx\@ND@vsize\@empty%
+         \expandafter\ifx\csname @NDS@\the\c@noteid\endcsname\relax%
+            \def\@ND@vsize{1}%
+         \else%
+            \edef\@ND@vsize{\csname @NDS@\the\c@noteid\endcsname}%
+         \fi%
+      \fi%
+      \setbox\@note@maintext\hbox{#2\vphantom{)}}%
+      \setbox\@note@subtext\hbox{\notesize #3}%
+      \vtop{%
+         \box\@note@maintext%
+         \begingroup%
+         \notesize%
+         \if@filesw%
+            \dimen@\wd\@note@subtext%
+            \advance\dimen@\notesep\relax%
+            \edef\@tempa{%
+               \write\@auxout{%
+                  \string\notedata{\the\c@noteid}%
+                     {\noexpand\the\lastxpos}{\noexpand\the\lastypos}%
+                     {\number\dimen@}{\number\ht\@note@subtext}{\number\dp\@note@subtext}%
+                     {\noexpand\the\c@page}}}%
+            \@tempa%
+         \else
+            \write16{}%
+         \fi
+         \endgroup%
+         \vskip\p@%
+         \hrule \@height\noterulethickness%
+         \hbox{\notesize%
+            \hskip\noterulehshift%
+            \count@\@ND@vsize\relax \advance\count@\m@ne%
+            \dimen@\noteshift\relax \multiply\dimen@\count@%
+            \advance\dimen@\notepos\relax%
+            \vrule \@height\dimen@ \@width\noterulethickness \@depth\z@%
+            \vrule \@height\noterulethickness \@width\noterulehsize \@depth\z@%
+            \hskip\p@%
+            \hbox to\z@{\lower.38\zw\box\@note@subtext\hss}}}}}
+\long\def\@text@notePlain#1#2#3{%
    \hbox{%
       \def\@ND@vsize{#1}%
       \ifx\@ND@vsize\@empty
@@ -242,33 +259,33 @@
       \setbox\@note@maintext\hbox{#2\vphantom{)}}%
       \setbox\@note@subtext\hbox{\notesize #3}%
       \vtop{%
-         \box\@note@maintext
-         \begingroup
-         \notesize
-         \if@filesw
-            \dimen@\wd\@note@subtext
-            \advance\dimen@\notesep\relax
+         \box\@note@maintext%
+         \begingroup%
+         \notesize%
+         \if@filesw%
+            \dimen@\wd\@note@subtext%
+            \advance\dimen@\notesep\relax%
             \edef\@tempa{%
                \write\@auxout{%
                   \string\notedata{\the\c@noteid}%
                      {\noexpand\the\lastxpos}{\noexpand\the\lastypos}%
                      {\number\dimen@}{\number\ht\@note@subtext}{\number\dp\@note@subtext}%
                      {\noexpand\the\c@page}}}%
-            \@tempa
-         \else
+            \@tempa%
+         \else%
             \write16{}%
-         \fi
-         \endgroup
-         \vskip\p@
-         \hrule \@height\noterulethickness
-         \hbox{\notesize
-            \hskip\noterulehshift
-            \count@\@ND@vsize\relax \advance\count@\m@ne
-            \dimen@\noteshift\relax \multiply\dimen@\count@
-            \advance\dimen@\notepos\relax
-            \vrule \@height\dimen@ \@width\noterulethickness \@depth\z@
-            \vrule \@height\noterulethickness \@width\noterulehsize \@depth\z@
-            \hskip\p@
+         \fi%
+         \endgroup%
+         \vskip\p@%
+         \hrule height\noterulethickness width0pt depth0pt \relax%
+         \hbox{\notesize%
+            \hskip\noterulehshift%
+            \count@\@ND@vsize\relax \advance\count@\m@ne%
+            \dimen@\noteshift\relax \multiply\dimen@\count@%
+            \advance\dimen@\notepos\relax%
+            \vrule \@height\dimen@ \@width\noterulethickness \@depth\z@%
+            \vrule \@height\noterulethickness \@width\noterulehsize \@depth\z@%
+            \hskip\p@%
             \hbox to\z@{\lower.38\zw\box\@note@subtext\hss}}}}}
 \newcount\@ND@min
 \newcount\@ND@max
