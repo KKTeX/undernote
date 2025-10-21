@@ -1,5 +1,5 @@
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesPackage{undernote}[2025/10/10, Version 1.0.2]
+\ProvidesPackage{undernote}[2025/10/10, Version 1.0.2a]
 
 \RequirePackage{ifluatex}
 \ifluatex\else
@@ -73,10 +73,28 @@
   \def\noteoverhang{#1}%
 }
 
+\NewDocumentCommand{\SetUNoteParstyle}{O{0}}{%
+  \ifnum#1=1
+   \let\wrap@undernote\wrap@undernote@styleA
+   \else\ifnum#1=2
+      \let\wrap@undernote\wrap@undernote@styleB
+      \else
+         \let\wrap@undernote\wrap@undernote@styleC
+   \fi\fi
+
+   \ifnum#1=1
+      \let\wrap@undernote@par\wrap@undernote@par@styleA
+   \else\ifnum#1=2
+      \let\wrap@undernote@par\wrap@undernote@par@styleB
+      \else
+         \let\wrap@undernote@par\wrap@undernote@par@styleC
+   \fi\fi
+}
+
 %%%
 
 
-\DeclareTotalTCBox{\FramedBox@undernote}{ O{} m }{%
+\DeclareTotalTCBox{\FramedBox@undernote}{ O{} +m }{%
   on line,arc=0pt,
   sharp corners,boxsep=0mm,
   left=.3mm,right=.3mm,top=0.3mm,bottom=0.3mm,
@@ -87,13 +105,23 @@
 }{#2}
 
 
-\DeclareTotalTCBox{\DashedBox@undernote}{ O{} m }{%
+\DeclareTotalTCBox{\DashedBox@undernote}{ O{} +m }{%
   on line,arc=0pt,
   sharp corners,boxsep=0mm,
   left=.3mm,right=.3mm,top=0.3mm,bottom=0.3mm,
   colback=white,colframe=white,
   enhanced,before={\hspace*{-.4ex}},
   borderline={\noterulethickness}{0mm}{dashed},
+  #1
+}{#2}
+
+
+\DeclareTotalTCBox{\NoframeBox@undernote}{ O{} +m }{%
+  on line,arc=0pt,
+  sharp corners,boxsep=0mm,
+  left=.3mm,right=.3mm,top=0.3mm,bottom=0.3mm,
+  colback=white,colframe=white,
+  enhanced,before={\hspace*{-.4ex}},
   #1
 }{#2}
 
@@ -110,27 +138,34 @@
    \DashedBox@undernote{\parbox[t]{\dimexpr\undernote@textlen@tempo - \noterulehsize - \noterulehshift + \noteoverhang\relax}{\setlength{\baselineskip}{.5ex}\setlength{\parindent}{1em}#1}}
 }}
 
-\NewDocumentCommand{\wrap@undernote@par}{ +m }{%
+\NewDocumentCommand{\wrap@undernote@par@styleC}{ +m }{%
 {%
-   \parbox[t]{\dimexpr\undernote@textlen@tempo - \noterulehsize - \noterulehshift + \noteoverhang\relax}{\setlength{\baselineskip}{.5ex}\setlength{\parindent}{1em}#1}
+   \NoframeBox@undernote{\parbox[t]{\dimexpr\undernote@textlen@tempo - \noterulehsize - \noterulehshift + \noteoverhang\relax}{\setlength{\baselineskip}{.5ex}\setlength{\parindent}{1em}#1}}
 }}
 
 \NewDocumentCommand{\wrap@undernote@styleA}{ +m }{{\FramedBox@undernote{#1}}}
 
-\NewDocumentCommand{\wrap@undernote@styleB}{ +m }{\DashedBox@undernote{#1}}
+\NewDocumentCommand{\wrap@undernote@styleB}{ +m }{{\DashedBox@undernote{#1}}}
+
+\NewDocumentCommand{\wrap@undernote@styleC}{ +m }{{\NoframeBox@undernote{#1}}}
 
 \NewDocumentCommand{\wrap@undernote}{ +m }{{#1}}
+\NewDocumentCommand{\wrap@undernote@par}{ +m }{{\wrap@undernote@styleC{#1}}}
 
 \ifnum\noteparstyle=1
    \let\wrap@undernote\wrap@undernote@styleA
 \else\ifnum\noteparstyle=2
    \let\wrap@undernote\wrap@undernote@styleB
+   \else
+      \let\wrap@undernote\wrap@undernote@styleC
 \fi\fi
 
 \ifnum\noteparstyle=1
    \let\wrap@undernote@par\wrap@undernote@par@styleA
 \else\ifnum\noteparstyle=2
    \let\wrap@undernote@par\wrap@undernote@par@styleB
+   \else
+      \let\wrap@undernote@par\wrap@undernote@par@styleC
 \fi\fi
 
 \newbox\@note@maintext
