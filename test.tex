@@ -1,18 +1,20 @@
 \documentclass{jlreq}
-\usepackage{undernote}
+\usepackage[parstyle=1]{textruler}
 
 \begin{document}
+\fboxsep=0pt\fboxrule=.1pt
+\SetUNoteParstyle[2]
+ああああ\undernote{\fbox{あ}あ\fbox{ああああ}}{あああ}[dash=true]あああああ
 
-ああああ\undernote{あああ}{あああ}あああああ
+\mruleh[height=1pt, width=5mm]\mruleh[width=5mm, height=1pt, dash=true]
 
-\mruleh[height=1pt]
-
-\bigskip
-
-\mruleh[width=5cm, height=1pt, dash=true]
 
 \bigskip
 
-\mruleh[height=2pt, width=10cm, color=blue, dash=true, dash-len=10pt, gap-len=5pt]
+\mrulev[width=5mm, height=1pt, dash=true]
+
+\bigskip
+
+\mruleh[height=2pt, width=1cm, color=blue, dash=true, dash-len=.01pt, gap-len=0pt]
 
 \end{document}
