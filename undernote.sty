@@ -4,12 +4,12 @@
 % TeX Live にぶち込むため、内部制御構造を多少変える。
 
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesPackage{undernote}[2025/10/10, Version 1.0.2a]
+\ProvidesPackage{textruler}[2025/10/10, Version 1.0.2a]
 
 %%% basical settings
 \RequirePackage{ifluatex}
 \ifluatex\else
-  \PackageError{undernote}{This package requires LuaLaTeX.}{Compile with lualatex.}
+  \PackageError{textruler}{This package requires LuaLaTeX.}{Compile with lualatex.}
 \fi
 
 \RequirePackage{kvoptions} 
@@ -33,7 +33,7 @@
 \ProcessKeyvalOptions*
 
 
-% kv
+% kv（undernoteの方）
 \def\notesize{\undernote@notesize}%%% 注釈部分の文字サイズ
 \def\notepos{\undernote@notepos}%%% 注釈へと伸ばす縦線の長さの最小値
 \def\noteshift{\undernote@noteshift}%%% 注釈を下にずらす場合の1段階分の移動量
@@ -277,36 +277,20 @@
    \fi%
    {#2}{#3}{%
      \ifnum\ltjgetparameter{direction}=4%
-       \begin{varwidth}[t]{\maxdimen}\IfBooleanTF{#1}{\wrap@undernote@par{#4}}{\wrap@undernote{#4}}\end{varwidth}%
+         \begin{varwidth}[t]{\maxdimen}%
+            \IfBooleanTF{#1}{\wrap@undernote@par{#4}}{\wrap@undernote{#4}}%
+         \end{varwidth}%
      \else%
-       \raisebox{.38\zw}{\begin{varwidth}[t]{\maxdimen}\IfBooleanTF{#1}{\wrap@undernote@par{#4}}{\wrap@undernote{#4}}\end{varwidth}}%
+         \raisebox{.38\zw}{%
+            \begin{varwidth}[t]{\maxdimen}%
+               \IfBooleanTF{#1}{\wrap@undernote@par{#4}}{\wrap@undernote{#4}}%
+            \end{varwidth}%
+         }%
      \fi%
      }%
    \endgroup}
-\DeclareDocumentCommand{\undernotePlain}{ s O{} m +m }{% 下線なし
-%%% #1（star）注釈をparboxに包む，
-%%% #2 (optinal): 注釈を下にずらす「行数」（与えない場合，自動設定），
-%%% #3: 注釈をつける語句，#4: 注釈
-   \settowidth{\undernote@textlen@tempo}{#3}%
-   \begingroup%
-   \stepcounter{undernote@id}%
-   \ifmmode%
-      \@note@save@conters%
-      \savepos%
-      \expandafter\@math@notePlain%
-   \else%
-      \leavevmode%
-      \savepos%
-      \expandafter\@text@notePlain%
-   \fi%
-   {#2}{#3}{%
-     \ifnum\ltjgetparameter{direction}=4%
-       \begin{varwidth}[t]{\maxdimen}\IfBooleanTF{#1}{\wrap@undernote@par{#4}}{\wrap@undernote{#4}}\end{varwidth}%
-     \else%
-       \raisebox{.38\zw}{\begin{varwidth}[t]{\maxdimen}\IfBooleanTF{#1}{\wrap@undernote@par{#4}}{\wrap@undernote{#4}}\end{varwidth}}%
-     \fi%
-     }%
-   \endgroup}
+
+% 名称カウンタ
 \def\@note@save@conters{%
    \begingroup
    \def\@elt##1{%
@@ -316,18 +300,16 @@
    \edef\@tempa{\cl@@ckpt}%
    \expandafter\endgroup
    \expandafter\def\expandafter\@note@restore@counters\expandafter{\@tempa}}
+
+% 数式モードの場合への対応
 \def\@math@note#1#2#3{%
    \mathchoice
       {\@note@restore@counters\@text@note{#1}{\m@th$\displaystyle #2$}{#3}}%
       {\@note@restore@counters\@text@note{#1}{\m@th$\textstyle #2$}{#3}}%
       {\@note@restore@counters\@text@note{#1}{\m@th$\scriptstyle #2$}{#3}}%
       {\@note@restore@counters\@text@note{#1}{\m@th$\scriptscriptstyle #2$}{#3}}}
-\def\@math@notePlain#1#2#3{%
-   \mathchoice
-      {\@note@restore@counters\@text@notePlain{#1}{\m@th$\displaystyle #2$}{#3}}%
-      {\@note@restore@counters\@text@notePlain{#1}{\m@th$\textstyle #2$}{#3}}%
-      {\@note@restore@counters\@text@notePlain{#1}{\m@th$\scriptstyle #2$}{#3}}%
-      {\@note@restore@counters\@text@notePlain{#1}{\m@th$\scriptscriptstyle #2$}{#3}}}
+
+% 注釈の内部実装
 \long\def\@text@note#1#2#3{%
    \hbox{%
       \def\@ND@vsize{#1}%
@@ -359,57 +341,20 @@
          \fi
          \endgroup%
          \vskip\p@%
-         \hrule \@height\noterulethickness%
+         % \hrule \@height\noterulethickness%
+         \mruleh[height=\noterulethickness, width=\undernote@textlen@tempo]%
          \hbox{\notesize%
             \hskip\noterulehshift%
             \count@\@ND@vsize\relax \advance\count@\m@ne%
             \dimen@\noteshift\relax \multiply\dimen@\count@%
             \advance\dimen@\notepos\relax%
-            \vrule \@height\dimen@ \@width\noterulethickness \@depth\z@%
-            \vrule \@height\noterulethickness \@width\noterulehsize \@depth\z@%
+            % \vrule \@height\dimen@ \@width\noterulethickness \@depth\z@%
+            % \vrule \@height\noterulethickness \@width\noterulehsize \@depth\z@%
+            \mrulev[height=\dimen@, width=\noterulethickness, depth=0pt]%
+            \mrulev[height=\noterulethickness, width=\noterulehsize, depth=0pt]%
             \hskip\p@%
             \hbox to\z@{\lower.38\zw\box\@note@subtext\hss}}}}}
-\long\def\@text@notePlain#1#2#3{%
-   \hbox{%
-      \def\@ND@vsize{#1}%
-      \ifx\@ND@vsize\@empty
-         \expandafter\ifx\csname @NDS@\the\c@undernote@id\endcsname\relax
-            \def\@ND@vsize{1}%
-         \else
-            \edef\@ND@vsize{\csname @NDS@\the\c@undernote@id\endcsname}%
-         \fi
-      \fi
-      \setbox\@note@maintext\hbox{#2\vphantom{)}}%
-      \setbox\@note@subtext\hbox{\notesize #3}%
-      \vtop{%
-         \box\@note@maintext%
-         \begingroup%
-         \notesize%
-         \if@filesw%
-            \dimen@\wd\@note@subtext%
-            \advance\dimen@\notesep\relax%
-            \edef\@tempa{%
-               \write\@auxout{%
-                  \string\notedata{\the\c@undernote@id}%
-                     {\noexpand\the\lastxpos}{\noexpand\the\lastypos}%
-                     {\number\dimen@}{\number\ht\@note@subtext}{\number\dp\@note@subtext}%
-                     {\noexpand\the\c@page}}}%
-            \@tempa%
-         \else%
-            \write16{}%
-         \fi%
-         \endgroup%
-         \vskip\p@%
-         \hrule height\noterulethickness width0pt depth0pt \relax%
-         \hbox{\notesize%
-            \hskip\noterulehshift%
-            \count@\@ND@vsize\relax \advance\count@\m@ne%
-            \dimen@\noteshift\relax \multiply\dimen@\count@%
-            \advance\dimen@\notepos\relax%
-            \vrule \@height\dimen@ \@width\noterulethickness \@depth\z@%
-            \vrule \@height\noterulethickness \@width\noterulehsize \@depth\z@%
-            \hskip\p@%
-            \hbox to\z@{\lower.38\zw\box\@note@subtext\hss}}}}}
+
 \newcount\@ND@min
 \newcount\@ND@max
 \global\@ND@max -\@M
