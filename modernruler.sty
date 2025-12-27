@@ -1,12 +1,12 @@
 % Lua以外への対応がまだ。\zw未定義問題と、縦書きかどうかの判定。
 
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesPackage{textruler}[2025/12/28, Version 1.0.0]
+\ProvidesPackage{modernruler}[2025/12/28, Version 1.0.0]
 
 %%% basical settings
 \RequirePackage{ifluatex}
 \ifluatex\else
-  \PackageError{textruler}{This package requires LuaLaTeX.}{Compile with lualatex.}
+  \PackageError{modernruler}{This package requires LuaLaTeX.}{Compile with lualatex.}
 \fi
 
 \RequirePackage{kvoptions} 
