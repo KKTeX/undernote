@@ -31,16 +31,16 @@
 
 
 % kv（undernoteの方）
-\def\notesize{\undernote@notesize}%%% 注釈部分の文字サイズ
-\def\notepos{\undernote@notepos}%%% 注釈へと伸ばす縦線の長さの最小値
-\def\noteshift{\undernote@noteshift}%%% 注釈を下にずらす場合の1段階分の移動量
-\def\noterulethickness{\undernote@noterulethickness}%%% \note で用いる罫線の太さ
-\def\noterulehshift{\undernote@noterulehshift}%%% 注釈へと伸ばす縦線の位置（注釈をつける語句につけた下線の左端から
-                                              %%% \noterulehshift だけ右にずれた位置に縦線を置く）
-\def\noterulehsize{\undernote@noterulehsize}%%% 注釈へと伸ばす横線の長さ
-\def\notesep{\undernote@notesep}%%% 前にある注釈が次の注釈の縦線から \notesep 以内に近づくようなら，
-                                %%% 前にある注釈を下にずらす（「2em」のように文字サイズに依存する
-                                %%% 指定をした場合は，\notesize（の，現在使用中のフォント）における値）
+\def\notesize{\undernote@notesize}                    %%% 注釈部分の文字サイズ
+\def\notepos{\undernote@notepos}                      %%% 注釈へと伸ばす縦線の長さの最小値
+\def\noteshift{\undernote@noteshift}                  %%% 注釈を下にずらす場合の1段階分の移動量
+\def\noterulethickness{\undernote@noterulethickness}  %%% \note で用いる罫線の太さ
+\def\noterulehshift{\undernote@noterulehshift}        %%% 注釈へと伸ばす縦線の位置（注釈をつける語句につけた下線の左端から
+                                                      %%% \noterulehshift だけ右にずれた位置に縦線を置く）
+\def\noterulehsize{\undernote@noterulehsize}          %%% 注釈へと伸ばす横線の長さ
+\def\notesep{\undernote@notesep}                      %%% 前にある注釈が次の注釈の縦線から \notesep 以内に近づくようなら，
+                                                      %%% 前にある注釈を下にずらす（「2em」のように文字サイズに依存する
+                                                      %%% 指定をした場合は，\notesize（の，現在使用中のフォント）における値）
 \def\noteoverhang{\undernote@noteoverhang}
 \def\noteparstyle{\undernote@parstyle}
 
@@ -84,9 +84,10 @@
    \else\ifnum#1=2
       \let\wrap@undernote\wrap@undernote@styleB%
       \let\wrap@undernote@par\wrap@undernote@par@styleB%
-      \def\hline@undernote@par{\mruleh[height=\noterulethickness, width=\undernote@textlen@tempo, dash=true]}%%% dash=true, dash-len=.01pt, gap-len=0pt
-               %%% としている理由は、呼び出しがvmode内部であるため、
-               %%% 内部的に\vruleを使わせるという技術的意図。
+      \def\hline@undernote@par{\mruleh[height=\noterulethickness, width=\undernote@textlen@tempo, dash=true]}%
+         %%% dash=true, dash-len=.01pt, gap-len=0pt
+         %%% としている理由は、呼び出しがvmode内部であるため、
+         %%% 内部的に\vruleを使わせるという技術的意図。
       \def\vlines@undernote@par{%
          \mrulev[height=\dimen@, width=\noterulethickness, depth=0pt ,dash=true]%
          \mruleh[height=\noterulethickness, width=\noterulehsize, depth=0pt, dash=true]%
@@ -147,27 +148,28 @@
     \color{\l_mrule_color_tl}
     \bool_if:NTF \l_mrule_dash_bool
       {\ifvmode \nointerlineskip \fi%
-         \dim_set:Nn \l_tmpa_dim { \l_mrule_height_dim + \l_mrule_depth_dim }
-         \vbox_to_ht:nn { \l_mrule_height_dim + \l_mrule_depth_dim }
-            {%
-               \dim_compare:nNnTF { \l_tmpa_dim } < { \l_mrule_dash_len_dim }
-               { % A. 短すぎる時はただの棒
-                  \hrule width \l_mrule_width_dim height \l_mrule_height_dim depth \l_mrule_depth_dim
-               }{ % B. 通常の破線ロジック
-                  \hrule width \l_mrule_width_dim height \l_mrule_dash_len_dim
-                  \xleaders \vbox:n 
-                  {% 注意！こっちは \hrule
-                        \skip_vertical:N \l_mrule_gap_len_dim
-                        \hrule width \l_mrule_width_dim height \l_mrule_dash_len_dim
-                  }\vfill%
-            }}\ifvmode \nointerlineskip \fi%
+      \dim_set:Nn \l_tmpa_dim { \l_mrule_height_dim + \l_mrule_depth_dim }
+      \vbox_to_ht:nn { \l_mrule_height_dim + \l_mrule_depth_dim }
+         {%
+            \dim_compare:nNnTF { \l_tmpa_dim } < { \l_mrule_dash_len_dim }
+            { % A. 短すぎる時はただの棒
+               \hrule width \l_mrule_width_dim height \l_mrule_height_dim depth \l_mrule_depth_dim
+            }{ % B. 通常の破線ロジック
+               \hrule width \l_mrule_width_dim height \l_mrule_dash_len_dim
+               \xleaders \vbox:n 
+               {% 注意！こっちは \hrule
+                     \skip_vertical:N \l_mrule_gap_len_dim
+                     \hrule width \l_mrule_width_dim height \l_mrule_dash_len_dim
+               }\vfill%
+         }}\ifvmode \nointerlineskip \fi%
       }
       {% 注意！こっちは \vrule
          \ifvmode \nointerlineskip \fi%
          \noindent\vrule width \l_mrule_width_dim height \l_mrule_height_dim depth \l_mrule_depth_dim
          \ifvmode \nointerlineskip \fi%
       }
-    }{\ifvmode \nointerlineskip \fi%
+    }{%
+      \ifvmode \nointerlineskip \fi%
       \noindent\vrule width \l_mrule_width_dim height \l_mrule_height_dim depth \l_mrule_depth_dim
       \ifvmode \nointerlineskip \fi%
     }
@@ -205,9 +207,9 @@
          }\ifvmode \nointerlineskip \fi%
       }
       {% 注意！こっちは \hrule
-      \ifvmode \nointerlineskip \fi%
-        \hrule width \l_mrule_total_width_dim height \l_mrule_height_dim depth \l_mrule_depth_dim
-      \ifvmode \nointerlineskip \fi%
+         \ifvmode \nointerlineskip \fi%
+         \hrule width \l_mrule_total_width_dim height \l_mrule_height_dim depth \l_mrule_depth_dim
+         \ifvmode \nointerlineskip \fi%
       }
     }{\ifvmode \nointerlineskip \fi%
       \hrule width \l_mrule_total_width_dim height \l_mrule_height_dim depth \l_mrule_depth_dim
@@ -252,15 +254,21 @@
 \newlength{\undernote@textlen@tempo}
 \NewDocumentCommand{\wrap@undernote@par@styleA}{ +m }{%
 {%
-   \FramedBox@undernote{\parbox[t]{\dimexpr\undernote@textlen@tempo - \noterulehsize - \noterulehshift + \noteoverhang\relax}{\setlength{\baselineskip}{.5ex}\setlength{\parindent}{1em}#1}}
+   \FramedBox@undernote{%
+      \parbox[t]{\dimexpr\undernote@textlen@tempo - \noterulehsize - \noterulehshift + \noteoverhang\relax}%
+      {\setlength{\baselineskip}{.5ex}\setlength{\parindent}{1em}#1}}%
 }}
 \NewDocumentCommand{\wrap@undernote@par@styleB}{ +m }{%
 {%
-   \DashedBox@undernote{\parbox[t]{\dimexpr\undernote@textlen@tempo - \noterulehsize - \noterulehshift + \noteoverhang\relax}{\setlength{\baselineskip}{.5ex}\setlength{\parindent}{1em}#1}}
+   \DashedBox@undernote{%
+      \parbox[t]{\dimexpr\undernote@textlen@tempo - \noterulehsize - \noterulehshift + \noteoverhang\relax}%
+      {\setlength{\baselineskip}{.5ex}\setlength{\parindent}{1em}#1}}%
 }}
 \NewDocumentCommand{\wrap@undernote@par@styleC}{ +m }{%
 {%
-   \NoframeBox@undernote{\parbox[t]{\dimexpr\undernote@textlen@tempo - \noterulehsize - \noterulehshift + \noteoverhang\relax}{\setlength{\baselineskip}{.5ex}\setlength{\parindent}{1em}#1}}
+   \NoframeBox@undernote{%
+      \parbox[t]{\dimexpr\undernote@textlen@tempo - \noterulehsize - \noterulehshift + \noteoverhang\relax}%
+      {\setlength{\baselineskip}{.5ex}\setlength{\parindent}{1em}#1}}%
 }}
 \NewDocumentCommand{\wrap@undernote@styleA}{ +m }{{\FramedBox@undernote{#1}}}
 \NewDocumentCommand{\wrap@undernote@styleB}{ +m }{{\DashedBox@undernote{#1}}}
@@ -272,6 +280,9 @@
    \let\wrap@undernote@par\wrap@undernote@par@styleA
    \def\hline@undernote@par{\mruleh[height=\noterulethickness, width=\undernote@textlen@tempo]}%
    \def\vlines@undernote@par{%
+   %%% dash=true, dash-len=.01pt, gap-len=0pt
+   %%% としている理由は、呼び出しがvmode内部であるため、
+   %%% 内部的に\vruleを使わせるという技術的意図。
       \mrulev[height=\dimen@, width=\noterulethickness, depth=0pt]%
       \mruleh[height=\noterulethickness, width=\noterulehsize, depth=0pt, 
       dash=true, dash-len=.01pt, gap-len=0pt]%
@@ -279,9 +290,7 @@
 \else\ifnum\noteparstyle=2
    \let\wrap@undernote\wrap@undernote@styleB
    \let\wrap@undernote@par\wrap@undernote@par@styleB
-   \def\hline@undernote@par{\mruleh[height=\noterulethickness, width=\undernote@textlen@tempo, dash=true]}%%% dash=true, dash-len=.01pt, gap-len=0pt
-              %%% としている理由は、呼び出しがvmode内部であるため、
-              %%% 内部的に\vruleを使わせるという技術的意図。
+   \def\hline@undernote@par{\mruleh[height=\noterulethickness, width=\undernote@textlen@tempo, dash=true]}%
    \def\vlines@undernote@par{%
       \mrulev[height=\dimen@, width=\noterulethickness, depth=0pt ,dash=true]%
       \mruleh[height=\noterulethickness, width=\noterulehsize, depth=0pt, dash=true]%
@@ -301,11 +310,11 @@
 \newbox\@note@subtext
 \newcounter{undernote@id} \setcounter{undernote@id}{0}
 \DeclareDocumentCommand{\undernote}{ s O{} m +m O{} }{%
-%%% #1（star）注釈をparboxに包む
-%%% #2 (optinal): 注釈を下にずらす「行数」（与えない場合自動設定）
-%%% #3: 注釈をつける語句
-%%% #4: 注釈
-%%% #5: どういう線にするか
+      %%% #1（star）注釈をparboxに包む
+      %%% #2 (optinal): 注釈を下にずらす「行数」（与えない場合自動設定）
+      %%% #3: 注釈をつける語句
+      %%% #4: 注釈
+      %%% #5: どういう線にするか
    \def\key@undernote@ruler{#5}%
    \settowidth{\undernote@textlen@tempo}{#3}%
    \begingroup%
@@ -385,22 +394,26 @@
          \fi
          \endgroup%
          \vskip\p@%
+         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
          % ベース
          % \hrule \@height\noterulethickness%
          % モダン
          % \mruleh[height=\noterulethickness, width=\undernote@textlen@tempo ,dash=true]%
+         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
          \hline@undernote@par%
          \hbox{\notesize%
             \hskip\noterulehshift%
             \count@\@ND@vsize\relax \advance\count@\m@ne%
             \dimen@\noteshift\relax \multiply\dimen@\count@%
             \advance\dimen@\notepos\relax%
+            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             % ベース
             % \vrule \@height\dimen@ \@width\noterulethickness \@depth\z@%
             % \vrule \@height\noterulethickness \@width\noterulehsize \@depth\z@%
             % モダン
             % \mrulev[height=\dimen@, width=\noterulethickness, depth=0pt ,dash=true]%
             % \mruleh[height=\noterulethickness, width=\noterulehsize, depth=0pt, dash=true]%
+            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             \vlines@undernote@par%
             \hskip\p@%
             \hbox to\z@{\lower.38\zw\box\@note@subtext\hss}}}}}
