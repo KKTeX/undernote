@@ -337,7 +337,7 @@
 % 名称カウンタ
 \def\@note@save@conters{%
    \begingroup
-   \def\@elt##1{%
+   \def\@elt@udnote##1{%
       \expandafter\ifx\csname c@##1\endcsname\c@page\else
          \csname c@##1\endcsname\the\csname c@##1\endcsname\relax
       \fi}%
@@ -443,7 +443,7 @@
    \@tempcnta\z@  \@tempcntb\z@
    \@tempdima-\p@ \@tempdimb-\p@
    \let\@linelist\@empty
-   \let\@elt\relax
+   \let\@elt@udnote\relax
    \count@#1\relax \advance\count@\m@ne
    \@whilenum\count@<#2\do{%
       \advance\count@\@ne
@@ -459,7 +459,7 @@
          \@tempcntb\count@
       \else
          \ifnum\@tempcnta>\z@
-            \edef\@linelist{\@linelist\@elt{\the\@tempcnta}{\the\@tempcntb}}%
+            \edef\@linelist{\@linelist\@elt@udnote{\the\@tempcnta}{\the\@tempcntb}}%
          \fi
          \@tempcnta\count@ \@tempcntb\count@
          \let\@currpage\@thispage
@@ -468,8 +468,8 @@
          \advance\@tempdima -\@ND@yfuzz\relax
          \advance\@tempdimb  \@ND@yfuzz\relax
       \fi}%
-   \edef\@linelist{\@linelist\@elt{\the\@tempcnta}{\the\@tempcntb}}%
-   \let\@elt\@checknotedata@elt
+   \edef\@linelist{\@linelist\@elt@udnote{\the\@tempcnta}{\the\@tempcntb}}%
+   \let\@elt@udnote\@checknotedata@elt
    \@linelist}
 \def\@ND@yfuzz{3\p@}
 \def\@checknotedata@split#1{%
