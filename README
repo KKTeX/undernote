@@ -1,22 +1,19 @@
 undernote — Under-note annotation system for LuaLaTeX
 ================================================
 
-Version: 1.0.1
-Date: 2025-10-12
-Author: Unknown
+Version: 1.0.0
+Date: 2025-12-28
+Author: Kosei Kawaguchi a.k.a. KKTeX
 
 Description:
 ------------
-This package provides the command \undernote for attaching short annotations
-beneath words or phrases in the main text, connected by a ruled line.
-It is especially useful for vertical Japanese typesetting using LuaLaTeX-ja,
-but it also works in horizontal text.
+This package provides the command \mhrule, \mvrule and \undernote.
+\mhrule and \mvrule are based on \hrule and \vrule, but they can take keyvalue options in order to change its color and style.
+\undernote is for attaching short annotations beneath words or phrases in the main text, connected by a ruled line, which internally uses \mhrule and \mvrule.
+These command can also be used in vertical writing mode. For example, 
+  \documentclass[tate]{jlreq} 
+is acceptable.
 
 Dependencies:
 -------------
-kvoptions, varwidth
-
-Sources:
--------
-https://oku.edu.mie-u.ac.jp/tex/mod/forum/discuss.php?d=3406
-https://x.com/doraTeX/status/1544320679436517378
+kvoptions, varwidth, tcolorbox
