@@ -147,23 +147,28 @@
     \color{\l_mrule_color_tl}
     \bool_if:NTF \l_mrule_dash_bool
       {\ifvmode \nointerlineskip \fi%
-        \vbox_to_ht:nn { \l_mrule_height_dim + \l_mrule_depth_dim }
-          {%
-            \hrule width \l_mrule_width_dim height \l_mrule_dash_len_dim
-            \xleaders \vbox:n 
-              {% 注意！こっちは \hrule
-                  \skip_vertical:N \l_mrule_gap_len_dim
+         \dim_set:Nn \l_tmpa_dim { \l_mrule_height_dim + \l_mrule_depth_dim }
+         \vbox_to_ht:nn { \l_mrule_height_dim + \l_mrule_depth_dim }
+            {%
+               \dim_compare:nNnTF { \l_tmpa_dim } < { \l_mrule_dash_len_dim }
+               { % A. 短すぎる時はただの棒
+                  \hrule width \l_mrule_width_dim height \l_mrule_height_dim depth \l_mrule_depth_dim
+               }{ % B. 通常の破線ロジック
                   \hrule width \l_mrule_width_dim height \l_mrule_dash_len_dim
-              }\vfill%
-          }\ifvmode \nointerlineskip \fi%
+                  \xleaders \vbox:n 
+                  {% 注意！こっちは \hrule
+                        \skip_vertical:N \l_mrule_gap_len_dim
+                        \hrule width \l_mrule_width_dim height \l_mrule_dash_len_dim
+                  }\vfill%
+            }}\ifvmode \nointerlineskip \fi%
       }
       {% 注意！こっちは \vrule
          \ifvmode \nointerlineskip \fi%
-         \vrule width \l_mrule_width_dim height \l_mrule_height_dim depth \l_mrule_depth_dim
+         \noindent\vrule width \l_mrule_width_dim height \l_mrule_height_dim depth \l_mrule_depth_dim
          \ifvmode \nointerlineskip \fi%
       }
     }{\ifvmode \nointerlineskip \fi%
-      \vrule width \l_mrule_width_dim height \l_mrule_height_dim depth \l_mrule_depth_dim
+      \noindent\vrule width \l_mrule_width_dim height \l_mrule_height_dim depth \l_mrule_depth_dim
       \ifvmode \nointerlineskip \fi%
     }
     \group_end:
@@ -184,15 +189,20 @@
     
     \bool_if:NTF \l_mrule_dash_bool
       {\ifvmode \nointerlineskip \fi%
-        \hbox_to_wd:nn { \l_mrule_total_width_dim }
-          {%   
-            \vrule width \l_mrule_dash_len_dim height \l_mrule_height_dim depth \l_mrule_depth_dim
-            \xleaders \hbox:n 
-              {% 注意！こっちは \vrule
-                  \skip_horizontal:N \l_mrule_gap_len_dim
-                  \vrule width \l_mrule_dash_len_dim height \l_mrule_height_dim depth \l_mrule_depth_dim
-              }\hfill%
-          }\ifvmode \nointerlineskip \fi%
+         \hbox_to_wd:nn { \l_mrule_total_width_dim }
+            {%
+            \dim_compare:nNnTF { \l_mrule_total_width_dim } < { \l_mrule_dash_len_dim } {
+               % A. 短すぎる時はただの棒
+               \noindent\vrule width \l_mrule_total_width_dim height \l_mrule_height_dim depth \l_mrule_depth_dim
+            }{ % B. 通常の破線ロジック
+               \noindent\vrule width \l_mrule_dash_len_dim height \l_mrule_height_dim depth \l_mrule_depth_dim
+               \xleaders \hbox:n 
+               {% 注意！こっちは \vrule
+                     \skip_horizontal:N \l_mrule_gap_len_dim
+                     \vrule width \l_mrule_dash_len_dim height \l_mrule_height_dim depth \l_mrule_depth_dim
+               }\hfill%
+            }
+         }\ifvmode \nointerlineskip \fi%
       }
       {% 注意！こっちは \hrule
       \ifvmode \nointerlineskip \fi%
