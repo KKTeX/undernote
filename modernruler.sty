@@ -247,7 +247,7 @@
   sharp corners,boxsep=0mm,
   left=.3mm,right=.3mm,top=0.3mm,bottom=0.3mm,
   colback=white,colframe=white,
-  enhanced,before={\hspace*{-.4ex}},
+  enhanced,before={\hspace*{-.1722\zw}},
   borderline={\noterulethickness}{0mm}{solid},
   #1
 }{#2}
@@ -256,7 +256,7 @@
   sharp corners,boxsep=0mm,
   left=.3mm,right=.3mm,top=0.3mm,bottom=0.3mm,
   colback=white,colframe=white,
-  enhanced,before={\hspace*{-.4ex}},
+  enhanced,before={\hspace*{-.1722\zw}},
   borderline={\noterulethickness}{0mm}{dashed},
   #1
 }{#2}
@@ -265,7 +265,7 @@
   sharp corners,boxsep=0mm,
   left=.3mm,right=.3mm,top=0.3mm,bottom=0.3mm,
   colback=white,colframe=white,
-  enhanced,before={\hspace*{-.4ex}},
+  enhanced,before={\hspace*{-.1722\zw}},
   #1
 }{#2}
 
@@ -275,19 +275,19 @@
 {%
    \FramedBox@undernote{%
       \parbox[t]{\dimexpr\undernote@textlen@tempo - \noterulehsize - \noterulehshift + \noteoverhang\relax}%
-      {\setlength{\baselineskip}{.5ex}\setlength{\parindent}{1em}#1}}%
+      {\setlength{\baselineskip}{.2153\zw}\setlength{\parindent}{1em}#1}}%
 }}
 \NewDocumentCommand{\wrap@undernote@par@styleB}{ +m }{%
 {%
    \DashedBox@undernote{%
       \parbox[t]{\dimexpr\undernote@textlen@tempo - \noterulehsize - \noterulehshift + \noteoverhang\relax}%
-      {\setlength{\baselineskip}{.5ex}\setlength{\parindent}{1em}#1}}%
+      {\setlength{\baselineskip}{.2153\zw}\setlength{\parindent}{1em}#1}}%
 }}
 \NewDocumentCommand{\wrap@undernote@par@styleC}{ +m }{%
 {%
    \NoframeBox@undernote{%
       \parbox[t]{\dimexpr\undernote@textlen@tempo - \noterulehsize - \noterulehshift + \noteoverhang\relax}%
-      {\setlength{\baselineskip}{.5ex}\setlength{\parindent}{1em}#1}}%
+      {\setlength{\baselineskip}{.2153\zw}\setlength{\parindent}{1em}#1}}%
 }}
 \NewDocumentCommand{\wrap@undernote@styleA}{ +m }{{\FramedBox@undernote{#1}}}
 \NewDocumentCommand{\wrap@undernote@styleB}{ +m }{{\DashedBox@undernote{#1}}}
