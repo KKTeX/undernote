@@ -1,10 +1,11 @@
 \documentclass[tate]{jlreq}
-\usepackage[parstyle=1]{modernruler}
+\usepackage[parstyle=1,noteoverhang=3em]{modernruler}
 
 \begin{document}
-\fboxsep=0pt\fboxrule=.1pt
-\SetUNoteParstyle[2]
-ああああ\undernote{\fbox{あ}あ\fbox{ああああ}}{ああああああああああああああああ}[dash=true]あ\undernote{\fbox{あ}あ\fbox{ああああ}}{あああ}[dash=true]ああ
+\fboxsep=0pt\fboxrule=.1pt%
+\SetUNoteParstyle[2]%
+
+ああああ\undernote*{\fbox{あ}あ\fbox{ああああ}}{ああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああ}[dash=true]あ\undernote{\fbox{あ}あ\fbox{ああああ}}{あああ}[dash=true]ああ
 
 \mruleh[height=1pt, width=5mm]\mruleh[width=5mm, height=1pt, dash=true]
 

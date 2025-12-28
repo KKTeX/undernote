@@ -4,26 +4,15 @@
 \ProvidesPackage{modernruler}[2025/12/28, Version 1.0.0]
 
 %%% basical settings
-\RequirePackage{ifuptex}
-\RequirePackage{ifluatex}
-\ifluatex
-\else\ifuptex
-  \def\zw{zw}\def\zh{zh}
-\else\ifptex
-  \def\zw{zw}\def\zh{zh}
-\else
-  \modernruler@error{Package 'modernruler' currently supports (u)pLaTeX and LuaLaTeX.}
-\fi\fi\fi
-
 \RequirePackage{kvoptions} 
 \RequirePackage{varwidth}
 \RequirePackage[most]{tcolorbox}
 
+%%% kv（undernoteの方）
 \SetupKeyvalOptions{%
   family=undernote,%
   prefix=undernote@%
 }
-
 \DeclareStringOption[\footnotesize]{notesize}
 \DeclareStringOption[3mm]{notepos}
 \DeclareStringOption[4mm]{noteshift}
@@ -35,8 +24,6 @@
 \DeclareStringOption[0]{parstyle}
 \ProcessKeyvalOptions*
 
-
-% kv（undernoteの方）
 \def\notesize{\undernote@notesize}                    %%% 注釈部分の文字サイズ
 \def\notepos{\undernote@notepos}                      %%% 注釈へと伸ばす縦線の長さの最小値
 \def\noteshift{\undernote@noteshift}                  %%% 注釈を下にずらす場合の1段階分の移動量
@@ -47,8 +34,10 @@
 \def\notesep{\undernote@notesep}                      %%% 前にある注釈が次の注釈の縦線から \notesep 以内に近づくようなら，
                                                       %%% 前にある注釈を下にずらす（「2em」のように文字サイズに依存する
                                                       %%% 指定をした場合は，\notesize（の，現在使用中のフォント）における値）
-\def\noteoverhang{\undernote@noteoverhang}
-\def\noteparstyle{\undernote@parstyle}
+\def\noteoverhang{\undernote@noteoverhang}            %%% parbox に入れるタイプ（スターをつけた時）
+                                                      %%% どの程度後ろに注釈部分を張り出させるか
+\def\noteparstyle{\undernote@parstyle}                %%% 注釈部分を
+                                                      %%% 1 と 2 以外: 囲みなし 1: 実線で囲う 2:点線で囲う
 
 
 % command
@@ -332,7 +321,7 @@
       \expandafter\@text@note%
    \fi%
    {#2}{#3}{%
-     \ifnum\ltjgetparameter{direction}=4%
+      \ifnum\ltjgetparameter{direction}=4%
          \begin{varwidth}[t]{\maxdimen}%
             \IfBooleanTF{#1}{\wrap@undernote@par{#4}}{\wrap@undernote{#4}}%
          \end{varwidth}%
