@@ -1,23 +1,30 @@
 \documentclass[tate]{jlreq}
-\usepackage[parstyle=1,noteoverhang=3em]{modernruler}
+\usepackage[parstyle=2,noteoverhang=3em]{modernruler}
 
 \begin{document}
 \fboxsep=0pt\fboxrule=.1pt%
-\SetUNoteParstyle[2]%
 
-ああああ\undernote*{\fbox{あ}あ\fbox{ああああ}}{ああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああ}[dash=true]あ\undernote{\fbox{あ}あ\fbox{ああああ}}{あああ}[dash=true]ああ
+ああああ\undernote*{ああああ}{ああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああ}あ\undernote{ああああああ}{あああああ}ああああああああ
 
-\mruleh[height=1pt, width=5mm]\mruleh[width=5mm, height=1pt, dash=true]
+\mruleh[width=2pt, height=1pt, dash=true, leader-type=aligned]
 
-
-\bigskip
-
-\mrulev[width=5mm, height=10pt, dash=true]
-
-\mrulev[width=5mm, height=10pt]
 
 \bigskip
 
-\mruleh[height=1pt, width=19pt, color=blue, dash=true, dash-len=2pt, gap-len=2pt]
+% \mrulev[width=8mm, height=10pt, dash=true]
+
+\mrulev[width=8mm, height=1pt, leader-type=aligned, dash=true]
+
+\bigskip
+
+\mruleh[height=1pt, width=19pt, color=blue, dash=true, dash-len=2pt, gap-len=2pt, leader-type=aligned]
+
+\mruleh[height=1pt, width=19pt, color=blue, dash=true, dash-len=3pt, gap-len=3pt, leader-type=aligned]
+
+
+\noindent\begin{tikzpicture}
+  \draw[dash pattern=on 5pt off 5pt] (0,0) -- (3,0);
+  \draw (0,-1) -- (3,-1);
+\end{tikzpicture}
 
 \end{document}

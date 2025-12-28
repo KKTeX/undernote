@@ -106,9 +106,10 @@
 \dim_new:N  \l_mrule_depth_dim
 \dim_new:N  \l_mrule_dash_len_dim
 \dim_new:N  \l_mrule_gap_len_dim
-\dim_new:N  \l_mrule_total_width_dim % 計算用
+\dim_new:N  \l_mrule_total_width_dim 
 \tl_new:N   \l_mrule_color_tl
 \bool_new:N \l_mrule_dash_bool
+\tl_new:N \l_mrule_leader_cmd_tl
 
 % キーの定義
 \keys_define:nn { modernrule }
@@ -120,6 +121,7 @@
     dash     .bool_set:N = \l_mrule_dash_bool,
     dash-len .dim_set:N  = \l_mrule_dash_len_dim,
     gap-len  .dim_set:N  = \l_mrule_gap_len_dim,
+    leader-type .tl_set:N = \l_mrule_leader_type_tl,
 
     % デフォルト値
     width    .initial:n = 0pt,
@@ -127,8 +129,9 @@
     depth    .initial:n = 0pt,
     color    .initial:n = black,
     dash     .initial:n = false,
-    dash-len .initial:n = 2pt,
-    gap-len  .initial:n = 2pt,
+    dash-len .initial:n = 3pt,
+    gap-len  .initial:n = 2.5pt,
+    leader-type .initial:n = x,
   }
 
 % 水平モード用 (テキスト中の垂直棒)
@@ -136,22 +139,35 @@
   {
     \group_begin:
     \keys_set:nn { modernrule } { #1 }
+    \cs_set:Npx \__mrule_use_leader: 
+      {
+        \str_case:Vn \l_mrule_leader_type_tl
+          {
+            { x } { \xleaders }
+            { c } { \cleaders }
+            { aligned } { \leaders }
+          }
+      }
     \dim_compare:nNnTF { \l_mrule_width_dim } > { 0pt } {
     \color{\l_mrule_color_tl}
     \bool_if:NTF \l_mrule_dash_bool
       {\ifvmode \nointerlineskip \fi%
-      \dim_set:Nn \l_tmpa_dim { \l_mrule_height_dim + \l_mrule_depth_dim }
       \vbox_to_ht:nn { \l_mrule_height_dim + \l_mrule_depth_dim }
          {%
-            \dim_compare:nNnTF { \l_tmpa_dim } < { \l_mrule_dash_len_dim }
-            { % A. 短すぎる時はただの棒
+            \dim_compare:nNnTF { \l_mrule_height_dim + \l_mrule_depth_dim } < { \l_mrule_dash_len_dim + \l_mrule_gap_len_dim }
+            { \dim_compare:nNnTF { \l_mrule_height_dim + \l_mrule_depth_dim } < {\l_mrule_dash_len_dim} {
+               % A-1. 短すぎる時はただの棒
                \hrule width \l_mrule_width_dim height \l_mrule_height_dim depth \l_mrule_depth_dim
-            }{ % B. 通常の破線ロジック
+            }{
+               % A-2. 短すぎる時はただの棒
                \hrule width \l_mrule_width_dim height \l_mrule_dash_len_dim
-               \xleaders \vbox:n 
+            } 
+            }{ % B. 通常の破線ロジック
+               % \hrule width \l_mrule_width_dim height \l_mrule_dash_len_dim
+               \__mrule_use_leader: \vbox:n 
                {% 注意！こっちは \hrule
-                     \skip_vertical:N \l_mrule_gap_len_dim
-                     \hrule width \l_mrule_width_dim height \l_mrule_dash_len_dim
+                  \hrule width \l_mrule_width_dim height \l_mrule_dash_len_dim
+                  \skip_vertical:N \l_mrule_gap_len_dim
                }\vfill%
          }}\ifvmode \nointerlineskip \fi%
       }
@@ -173,6 +189,15 @@
   {
     \group_begin:
     \keys_set:nn { modernrule } { #1 }
+    \cs_set:Npx \__mrule_use_leader: 
+      {
+        \str_case:Vn \l_mrule_leader_type_tl
+          {
+            { x } { \xleaders }
+            { c } { \cleaders }
+            { aligned } { \leaders }
+          }
+      }
     \dim_compare:nNnTF { \l_mrule_width_dim } > { 0pt } {
     \color{\l_mrule_color_tl}
     
@@ -185,15 +210,19 @@
       {\ifvmode \nointerlineskip \fi%
          \hbox_to_wd:nn { \l_mrule_total_width_dim }
             {%
-            \dim_compare:nNnTF { \l_mrule_total_width_dim } < { \l_mrule_dash_len_dim } {
-               % A. 短すぎる時はただの棒
-               \noindent\vrule width \l_mrule_total_width_dim height \l_mrule_height_dim depth \l_mrule_depth_dim
+               \dim_compare:nNnTF { \l_mrule_total_width_dim } < { \l_mrule_dash_len_dim + \l_mrule_gap_len_dim } {
+                  \dim_compare:nNnTF { \l_mrule_total_width_dim } < { \l_mrule_dash_len_dim } {
+                     % A-1. 短すぎる時はただの棒
+                     \noindent\vrule width \l_mrule_total_width_dim height \l_mrule_height_dim depth \l_mrule_depth_dim
+                  }{ % A-2. 短すぎる時はただの棒
+                     \noindent\vrule width \l_mrule_dash_len_dim height \l_mrule_height_dim depth \l_mrule_depth_dim
+                  }
             }{ % B. 通常の破線ロジック
-               \noindent\vrule width \l_mrule_dash_len_dim height \l_mrule_height_dim depth \l_mrule_depth_dim
-               \xleaders \hbox:n 
+               % \noindent\vrule width \l_mrule_dash_len_dim height \l_mrule_height_dim depth \l_mrule_depth_dim
+               \__mrule_use_leader: \hbox:n 
                {% 注意！こっちは \vrule
-                     \skip_horizontal:N \l_mrule_gap_len_dim
-                     \vrule width \l_mrule_dash_len_dim height \l_mrule_height_dim depth \l_mrule_depth_dim
+                  \vrule width \l_mrule_dash_len_dim height \l_mrule_height_dim depth \l_mrule_depth_dim
+                  \skip_horizontal:N \l_mrule_gap_len_dim
                }\hfill%
             }
          }\ifvmode \nointerlineskip \fi%
