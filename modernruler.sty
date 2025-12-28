@@ -4,10 +4,16 @@
 \ProvidesPackage{modernruler}[2025/12/28, Version 1.0.0]
 
 %%% basical settings
+\RequirePackage{ifuptex}
 \RequirePackage{ifluatex}
-\ifluatex\else
-  \PackageError{modernruler}{This package requires LuaLaTeX.}{Compile with lualatex.}
-\fi
+\ifluatex
+\else\ifuptex
+  \def\zw{zw}\def\zh{zh}
+\else\ifptex
+  \def\zw{zw}\def\zh{zh}
+\else
+  \modernruler@error{Package 'modernruler' currently supports (u)pLaTeX and LuaLaTeX.}
+\fi\fi\fi
 
 \RequirePackage{kvoptions} 
 \RequirePackage{varwidth}
@@ -58,7 +64,6 @@
 \NewDocumentCommand{\SetUNoteRuleHSize}{O{1.5mm}}{%
   \def\noterulehsize{#1}%
 }
-
 \NewDocumentCommand{\SetUNotePos}{O{3mm}}{%
   \def\notepos{#1}%
 }
@@ -230,7 +235,6 @@
   borderline={\noterulethickness}{0mm}{solid},
   #1
 }{#2}
-
 \DeclareTotalTCBox{\DashedBox@undernote}{ O{} +m }{%
   on line,arc=0pt,
   sharp corners,boxsep=0mm,
@@ -240,7 +244,6 @@
   borderline={\noterulethickness}{0mm}{dashed},
   #1
 }{#2}
-
 \DeclareTotalTCBox{\NoframeBox@undernote}{ O{} +m }{%
   on line,arc=0pt,
   sharp corners,boxsep=0mm,
@@ -250,8 +253,8 @@
   #1
 }{#2}
 
-
 \newlength{\undernote@textlen@tempo}
+
 \NewDocumentCommand{\wrap@undernote@par@styleA}{ +m }{%
 {%
    \FramedBox@undernote{%
