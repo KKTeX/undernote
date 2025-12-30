@@ -1,0 +1,107 @@
+\documentclass[luatex,fontsize=8pt,paper=b5,twoside]{jlreq}%
+\usepackage{luwa-ul}
+\usepackage{hyperref}
+\usepackage{booktabs,caption}
+\usepackage[most]{tcolorbox}
+\usepackage{fp}
+\usepackage{lltjext}
+\usepackage{luatexja-ruby}
+\usepackage{keisennote}
+\usepackage{amsmath,amssymb}
+\usepackage{modernruler}
+
+\usepackage{listings}
+\lstset{
+    basicstyle=\ttfamily\small,
+    keywordstyle=\color{blue},
+    commentstyle=\color{gray},
+    stringstyle=\color{red},
+    breaklines=true,
+    breakatwhitespace=false,  
+    columns=flexible           
+}
+
+% You can omit these font settings.
+\RequirePackage[no-math]{fontspec}
+\RequirePackage[no-math,match,scale=1]{luatexja-fontspec}
+\RequirePackage[hiragino-pro,deluxe,expert]{luatexja-preset}
+\setmainfont{HiraMinPro-W3}[BoldFont=HiraMinPro-W6]\setmainjfont{HiraMinPro-W3}[BoldFont=HiraMinPro-W6]
+\renewfontfamily{\sffamily}{HiraKakuPro-W3}[BoldFont=HiraKakuPro-W6]
+\renewfontfamily{\mcfamily}{HiraMinPro-W3}[BoldFont=HiraMinPro-W6]
+\renewfontfamily{\gtfamily}{HiraKakuPro-W3}[BoldFont=HiraKakuPro-W6]
+\providefontfamily{\mgfamily}{HiraMaruPro-W4}
+\newfontfamily{\sfhira}{HiraKakuPro-W3}[BoldFont=HiraKakuPro-W6]\newjfontfamily{\sfhiraj}{HiraKakuPro-W3}[BoldFont=HiraKakuPro-W6]
+\newfontfamily{\mchira}{HiraMinPro-W3}[BoldFont=HiraMinPro-W6]\newjfontfamily{\mchiraj}{HiraMinPro-W3}[BoldFont=HiraMinPro-W6]
+\newfontfamily{\gthira}{HiraKakuPro-W3}[BoldFont=HiraKakuPro-W6,FontFace={eb}{\shapedefault}{HiraKakuStd-W8}]\newjfontfamily{\gthiraj}{HiraKakuPro-W3}[BoldFont=HiraKakuPro-W6,FontFace={eb}{\shapedefault}{HiraKakuStd-W8}]
+\newfontfamily{\mghira}{HiraMaruPro-W4}\newjfontfamily{\mghiraj}{HiraMaruPro-W4}
+\renewcommand{\sffamily}{\sfhira\sfhiraj}
+\renewcommand{\mcfamily}{\mchira\mchiraj}
+\renewcommand{\gtfamily}{\gthira\gthiraj}
+\renewcommand{\mgfamily}{\mghira\mghiraj}
+%%%
+
+
+\usepackage{hyperref} 
+\hypersetup{
+  luatex, pdfencoding=auto, 
+  colorlinks=true,
+  linkcolor=black,     
+  citecolor=black,     
+  urlcolor=DeepSkyBlue3,      
+  pdfborder={0 0 0}, 
+}
+
+\colorlet{grayLight}{white!80!black} 
+
+\NewTCBListing{SourceCode}{ O{Input} m !o !O{DeepSkyBlue3} }{%
+  enhanced, colback=black!70, colframe=Snow4,
+  toptitle=-1mm, bottomtitle=-1mm,
+  righttitle=-1mm, lefttitle=-1mm,
+  arc=.5mm, 
+  title={\tcbox[on line, arc=.5mm, boxsep=0pt, boxrule=0pt, top=1mm, bottom=0.8mm, left=2mm, right=2.2mm, colback=gray!80, coltext=white]{\raisebox{-0.1ex}{\vphantom{羅}\vphantom{j}#1}}},fonttitle=\gtfamily\footnotesize,boxrule=0.8pt,
+  breakable,before upper={\color{white}},top=-0.5mm,bottom=-0.5mm,
+  after title=\IfNoValueTF{#3}{}{{\hfill\tcbox[on line, arc=.5mm, boxsep=0pt, boxrule=0pt, top=1mm, bottom=0.8mm, left=2mm, right=2.2mm, colback=white!80!black, coltext=#4]{\raisebox{-0.1ex}{\vphantom{羅}\vphantom{j}#3}}}},
+  listing only,
+  listing options={
+    language={#2},
+    basicstyle=\ttfamily,
+    keywordstyle=\ttfamily\color{white},
+    stringstyle=\itshape\color{white},
+    commentstyle=\small\gtfamily\color{DeepSkyBlue2},
+    showspaces=false,showtabs=false,
+    breaklines=true,breakindent=0pt,
+    showstringspaces=false,
+    columns=fullflexible,
+    tabsize=2,
+    numbers=left,numbersep=1.5pt,
+    numberstyle=\scriptsize\gtfamily\color{gray},
+  }
+}
+
+\NewTColorBox{OutPut}{ m !o !O{DeepSkyBlue3} }{%
+  enhanced, colframe=Snow4,
+  toptitle=-1mm, bottomtitle=-1mm,
+  righttitle=-1mm, lefttitle=-1mm,
+  arc=.5mm, colback=white, 
+  title={\tcbox[on line, arc=.5mm, boxsep=0pt, boxrule=0pt, top=1mm, bottom=0.8mm, left=2mm, right=2.2mm, colback=gray!40, coltext=DeepSkyBlue3]{\raisebox{-0.1ex}{\vphantom{羅}\vphantom{j}#1}}},fonttitle=\gtfamily\footnotesize,boxrule=0.8pt,
+  breakable,top=-0.5mm,bottom=-0.5mm,
+  after title=\IfNoValueTF{#2}{}{{\hfill\tcbox[on line, arc=.5mm, boxsep=0pt, boxrule=0pt, top=1mm, bottom=0.8mm, left=2mm, right=2.2mm, colback=white!80!black, coltext=#3]{\raisebox{-0.1ex}{\vphantom{羅}\vphantom{j}#2}}}}, bottom=2mm, top=2mm, 
+}
+
+
+\title{\texttt{modernruler} Package Documentation}
+\author{KKTeX}
+\date{Version 1.0.0 (2025/12/28)}
+
+\begin{document}
+\begin{titlepage}
+  \maketitle
+\end{titlepage}
+\newpage
+\tableofcontents
+\newpage
+
+\section{License}
+Released under the MIT License.
+
+\end{document}
