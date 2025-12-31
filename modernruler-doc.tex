@@ -136,6 +136,21 @@ This package provides modern hrule (\verb|\mruleth|), vrule (\verb|\mruletv|), a
   This is under note. This uses \undernote{these commands}{\texttt{\textbackslash mruleh} and \texttt{\textbackslash mrulev}} internally and enables make flexible outputs.
 \end{OutPut}
 
+\section{Acknowledgements / Credits}
+This package was inspired by discussions on TeX Forum concerning
+undernote-like constructions using rules.
+
+An improved approach was later presented by Mr.~Yusuke~Terada,
+which clarified several implementation details.
+
+The present package is a complete reimplementation and extension,
+introducing a generalized rule-based engine, redesigned control flow,
+and additional features such as modern ruler integration and
+\texttt{tcolorbox}-based abstractions.
+
+Any remaining errors or design decisions are entirely the
+responsibility of the author.
+
 \section{Installation}
 \begin{SourceCode}{Intput}{TeX}
   \usepackage[<options>]{modernruler}

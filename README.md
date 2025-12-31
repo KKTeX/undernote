@@ -20,6 +20,24 @@
 
 ---
 
+## Acknowledgements / Credits
+
+This package was inspired by discussions on TeX Forum concerning
+undernote-like constructions using rules.
+
+An improved approach was later presented by Mr. YusukeTerada,
+which clarified several implementation details.
+
+The present package is a complete reimplementation and extension,
+introducing a generalized rule-based engine, redesigned control flow,
+and additional features such as modern ruler integration and
+tcolorbox-based abstractions.
+
+Any remaining errors or design decisions are entirely the
+responsibility of the author.
+
+---
+
 ## Key Features / 特徴
 
 - **Stylable Rules / スタイル指定可能な罫線**
