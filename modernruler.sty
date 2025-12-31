@@ -463,33 +463,41 @@
 \def\undernotedata@internal#1#2#3#4#5#6#7{%%% #1: id, #2: xpos, #3: ypos, #4: width of the note,
                                           %%% #5: height of the note, #6: depth of the note, #7: page
    \@ifundefined{@UNDATA@#1}%
-      {\@tempcnta\@UNDATA@max \advance\@tempcnta\@ne
-       \ifnum\@tempcnta=#1\relax
-          \global\@UNDATA@max\@tempcnta
-       \else
-          \ifnum\@UNDATA@max<\z@\else
+      {\@tempcnta\@UNDATA@max \advance\@tempcnta\@ne%
+       \ifnum\@tempcnta=#1\relax%
+          \global\@UNDATA@max\@tempcnta%
+       \else%
+          \ifnum\@UNDATA@max<\z@\else % 
+               % 最初はmaxが-10000なので
+               % 必ずこの分岐に入り
+               % idlistが作られる
              \xdef\@UNDATA@idlist{\@UNDATA@idlist\@UNDATA@elt{\the\@UNDATA@min}{\the\@UNDATA@max}}%
-          \fi
-          \global\@UNDATA@min=#1\relax
-          \global\@UNDATA@max\@UNDATA@min
+               % １回目では\relaxが入ってるので
+               % 残って２回目へ
+          \fi%
+          \global\@UNDATA@min=#1\relax%
+          \global\@UNDATA@max\@UNDATA@min%
        \fi}%
       {\gdef\@multiplelabels{\@latex@warning@no@line{There were multiply-defined labels}}%
-       \@latex@warning@no@line%%% 
-          {Note ID `#1' multiply appeared}}%
-   \global\@namedef{@UNDATA@#1}{{#2}{#3}{#4}{#5}{#6}{#7}}}
+       \@latex@warning@no@line{Note ID `#1' multiply appeared}%
+      }%
+   \global\@namedef{@UNDATA@#1}{{#2}{#3}{#4}{#5}{#6}{#7}}%
+}
 
 \def\@undernotedata#1#2#3#4#5#6#7{%
    \def\@tempa{{#2}{#3}{#4}{#5}{#6}{#7}}%
-   \expandafter\ifx\csname @UNDATA@#1\endcsname\@tempa\else \@tempswatrue \fi}
+   \expandafter\ifx\csname @UNDATA@#1\endcsname\@tempa\else \@tempswatrue \fi%
+}
 
 \def\checkundernotedata{%
- \ifnum\@UNDATA@max<\z@\else
+ \ifnum\@UNDATA@max<\z@\else%
    \xdef\@UNDATA@idlist{\@UNDATA@idlist\@UNDATA@elt{\the\@UNDATA@min}{\the\@UNDATA@max}}%
-   \begingroup
-   \let\@UNDATA@elt\@check@undernotedata
-   \@UNDATA@idlist
-   \endgroup
- \fi}
+   \begingroup%
+      \let\@UNDATA@elt\@check@undernotedata%
+      \@UNDATA@idlist%
+   \endgroup%
+ \fi%
+}
 
 \def\@check@undernotedata#1#2{%
    \def\@currpage{-10000}%
