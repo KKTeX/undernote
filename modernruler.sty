@@ -451,9 +451,11 @@
        \@latex@warning@no@line%%% 
           {Note ID `#1' multiply appeared}}%
    \global\@namedef{@UNDATA@#1}{{#2}{#3}{#4}{#5}{#6}{#7}}}
+
 \def\@undernotedata#1#2#3#4#5#6#7{%
    \def\@tempa{{#2}{#3}{#4}{#5}{#6}{#7}}%
    \expandafter\ifx\csname @UNDATA@#1\endcsname\@tempa\else \@tempswatrue \fi}
+
 \def\checknotedata{%
  \ifnum\@UNDATA@max<\z@\else
    \xdef\@UNDATA@idlist{\@UNDATA@idlist\@UNDATA@elt{\the\@UNDATA@min}{\the\@UNDATA@max}}%
@@ -462,6 +464,7 @@
    \@UNDATA@idlist
    \endgroup
  \fi}
+
 \def\@checknotedata#1#2{%
    \def\@currpage{-10000}%
    \@tempcnta\z@  \@tempcntb\z@
@@ -495,10 +498,13 @@
    \edef\@linelist{\@linelist\@elt@udnote{\the\@tempcnta}{\the\@tempcntb}}%
    \let\@elt@udnote\@checknotedata@elt
    \@linelist}
+
 \def\@UNDATA@yfuzz{3\p@}
+
 \def\@checknotedata@split#1{%
    \expandafter\expandafter\expandafter\@checknotedata@split@
       \csname @UNDATA@\number#1\endcsname 000000\@nnil}
+
 \def\@checknotedata@split@#1#2#3#4#5#6#7\@nnil{%
    \def\@thisx{#1}%
    \def\@thisy{#2}%
@@ -506,6 +512,7 @@
    \def\@thisht{#4}%
    \def\@thisdp{#5}%
    \def\@thispage{#6}}
+
 \def\@checknotedata@elt#1#2{%
    \count@#2\relax \advance\count@\@ne
    \@whilenum\count@>#1\do{%
@@ -533,6 +540,7 @@
             \ifnum\@tempcntb<\count\tw@ \@tempcntb\count\tw@ \fi
          \fi}%
       \expandafter\xdef\csname @UNDATAS@\the\count@\endcsname{\the\@tempcntb}}}
+
 \AtEndDocument{%
    \if@filesw
       \write\@auxout{\string\checknotedata}%
