@@ -220,7 +220,6 @@
           }
       }
       {
-        % dash=false: 垂直実線
         \vbox:n { {\color{\l_mrule_color_tl} \hrule width \l_mrule_width_dim height \l_mrule_height_dim} }
       }
     \group_end:
@@ -410,7 +409,7 @@
 \global\let\@UNDATA@idlist\@empty
 \let\@UNDATA@elt\relax
 \def\undernotedata@internal#1#2#3#4#5#6#7{%%% #1: id, #2: xpos, #3: ypos, #4: width of note,
-                            %%% #5: height of note, #6: depth of note, #7: page
+                                          %%% #5: height of note, #6: depth of note, #7: page
    \@ifundefined{@UNDATA@#1}%
       {\@tempcnta\@UNDATA@max \advance\@tempcnta\@ne
        \ifnum\@tempcnta=#1\relax
