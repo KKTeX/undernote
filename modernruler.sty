@@ -105,6 +105,7 @@
 \tl_new:N   \l_mrule_color_tl
 \bool_new:N \l_mrule_dash_bool
 \tl_new:N \l_mrule_leader_cmd_tl
+\dim_new:N \l__mrule_tmp_remaining_dim
 
 % キーの定義
 \keys_define:nn { modernrule }
@@ -129,10 +130,7 @@
     gap-color .initial:n = white,
   }
 
-% 計算用変数
-\dim_new:N \l__mrule_tmp_remaining_dim
-
-% --- 水平方向：2色点線 (Composite Horizontal) ---
+% 水平方向：2色点線
 \NewDocumentCommand{\mruleth}{O{}}
   {
     \group_begin:
@@ -183,7 +181,7 @@
     \group_end:
   }
 
-% --- 垂直方向：2色点線 (Composite Vertical) ---
+% 垂直方向：2色点線
 \NewDocumentCommand{\mruletv}{O{}}
   {
     \group_begin:
