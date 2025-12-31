@@ -482,7 +482,7 @@
    \def\@tempa{{#2}{#3}{#4}{#5}{#6}{#7}}%
    \expandafter\ifx\csname @UNDATA@#1\endcsname\@tempa\else \@tempswatrue \fi}
 
-\def\checknotedata{%
+\def\checkundernotedata{%
  \ifnum\@UNDATA@max<\z@\else
    \xdef\@UNDATA@idlist{\@UNDATA@idlist\@UNDATA@elt{\the\@UNDATA@min}{\the\@UNDATA@max}}%
    \begingroup
@@ -569,8 +569,8 @@
 
 \AtEndDocument{%
    \if@filesw
-      \write\@auxout{\string\checknotedata}%
-      \let\checknotedata\relax
+      \write\@auxout{\string\checkundernotedata}%
+      \let\checkundernotedata\relax
       \def\undernotedata@internal{\@undernotedata}%
    \fi}
 
