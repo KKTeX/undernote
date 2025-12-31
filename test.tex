@@ -6,15 +6,21 @@
 
 あああああ\undernote{あああ}{あああああ}あああ
 
-% 通常の実線
-\mruleth[height=1pt, width=8cm, color=blue]
+\fbox{\mruleth[height=1pt, width=55pt, color=blue]}
 
-% 破線（dashオプション）
-\mruleth[height=2pt, width=8cm, color=red, dash=true, dash-len=5pt, gap-len=3pt]
+\fbox{\mruleth[height=1pt, width=55pt, color=blue]}
+\fbox{\mruleth[height=1pt, width=55pt, color=blue, dash=true]}
+\fbox{\mruleth[height=1pt, width=57pt, color=blue, dash=true]}
+\fbox{\mruleth[height=1pt, width=59pt, color=blue, dash=true]}
 
-% 文中で垂直線を入れる
-ここから垂直線 \mruletv[height=\zw, depth=1.5\zw, width=1pt, color=green] です。
+\fbox{\mruletv[width=1pt, height=55pt, color=blue]}
+\fbox{\mruletv[width=1pt, height=55pt, color=blue, dash=true]}
+\fbox{\mruletv[width=1pt, height=57pt, color=blue, dash=true]}
+\fbox{\mruletv[width=1pt, height=59pt, color=blue, dash=true]}
 
-% 破線の垂直線
-点線の区切り \mruletv[height=2\zw, width=1.5pt, color=orange, dash=true, dash-len=2pt, gap-len=1pt] を作ります。
+% Horizontal: Alternating Black and Cyan segments
+\mruleth[width=120pt, height=2pt, dash=true, dash-len=6pt, gap-len=6pt, color=black, gap-color=cyan]
+
+% Vertical: Warning Pattern (Yellow and Black)
+\mruletv[width=3pt, height=50pt, dash=true, dash-len=8pt, gap-len=4pt, color=yellow, gap-color=black]
 \end{document}

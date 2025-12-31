@@ -23,8 +23,8 @@
 ## Key Features / 特徴
 
 - **Stylable Rules / スタイル指定可能な罫線**
-  - `\mhrule` and `\mvrule` allow you to change colors and styles easily via key-value options.
-  - `\mhrule` と `\mvrule` は、色やスタイルをオプションで簡単にカスタマイズできます。
+  - `\mruleth` and `\mruletv` allow you to change colors and styles easily via key-value options.
+  - `\mruleth` と `\mruletv` は、色やスタイルをオプションで簡単にカスタマイズできます。
 
 - **Annotations with \undernote / 注釈機能（\undernote）**
   - Attach short annotations beneath words or phrases, connected by a clean ruled line.

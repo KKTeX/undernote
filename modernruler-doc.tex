@@ -102,36 +102,36 @@
 \newpage
 
 \section{Outline}
-This package provides modern hrule (\verb|\mruleh|), vrule (\verb|\mrulev|), and \verb|\undernote| internally uses the two commands.
+This package provides modern hrule (\verb|\mruleth|), vrule (\verb|\mruletv|), and \verb|\undernote| internally uses the two commands.
 
 \begin{SourceCode}{Intput}{TeX}
   % normal rule
-  \mruleh[height=1pt, width=5cm, color=blue]
+  \mruleth[height=1pt, width=5cm, color=blue]
 
   % dashed rule
-  \mruleh[height=2pt, width=8cm, color=red, dash=true, dash-len=5pt, gap-len=3pt]
+  \mruleth[height=2pt, width=8cm, color=red, dash=true, dash-len=5pt, gap-len=3pt]
 
   % inline rule
-  This is \mrulev[height=\zw, depth=1.5\zw, width=1pt, color=green] a modern vrule.
+  This is \mruletv[height=\zw, depth=1.5\zw, width=1pt, color=green] a modern vrule.
 
   % inline dashed rule
-  This is \mrulev[height=2\zw, width=1.5pt, color=orange, dash=true, dash-len=2pt, gap-len=1pt] a dashed modern vrule.
+  This is \mruletv[height=2\zw, width=1.5pt, color=orange, dash=true, dash-len=2pt, gap-len=1pt] a dashed modern vrule.
 
   % undernote
   This is under note. This uses \undernote{these commands}{\texttt{\textbackslash mruleh} and \texttt{\textbackslash mrulev}} internally and enables make flexible outputs.
 \end{SourceCode}
 \begin{OutPut}{Output}
   % normal rule
-  \mruleh[height=1pt, width=5cm, color=blue]
+  \mruleth[height=1pt, width=5cm, color=blue]
 
   % dashed rule
-  \mruleh[height=2pt, width=8cm, color=red, dash=true, dash-len=5pt, gap-len=3pt]
+  \mruleth[height=2pt, width=8cm, color=red, dash=true, dash-len=5pt, gap-len=3pt]
 
   % inline rule
-  This is \mrulev[height=\zw, depth=1.5\zw, width=1pt, color=green] a modern vrule.
+  This is \mruletv[height=\zw, depth=1.5\zw, width=1pt, color=green] a modern vrule.
 
   % inline dashed rule
-  This is \mrulev[height=2\zw, width=1.5pt, color=orange, dash=true, dash-len=2pt, gap-len=1pt] a dashed modern vrule.
+  This is \mruletv[height=2\zw, width=1.5pt, color=orange, dash=true, dash-len=2pt, gap-len=1pt] a dashed modern vrule.
 
   % undernote
   This is under note. This uses \undernote{these commands}{\texttt{\textbackslash mruleh} and \texttt{\textbackslash mrulev}} internally and enables make flexible outputs.
@@ -145,12 +145,12 @@ This package provides modern hrule (\verb|\mruleh|), vrule (\verb|\mrulev|), and
 Detailed information regarding the options will be provided in a later section, specifically during the explanation of the \verb|\undernote| command.
 
 \section{Commands}
-\subsection{\texttt{\textbackslash mruleh, \textbackslash mrulev}}
-In the first place, \verb|\mruleh| and \verb|mrulev| are extended \verb|\hrule| and \verb|\vrule|. You can use them like this:
+\subsection{\texttt{\textbackslash mruleth, \textbackslash mruletv}}
+In the first place, \verb|\mruleth| and \verb|mruletv| are extended \verb|\hrule| and \verb|\vrule|. You can use them like this:
 
 \begin{SourceCode}{Intput}{TeX}
-  \mruleh[<keyvaloptions>]
-  \mrulev[<keyvaloptions>]
+  \mruleth[<keyvaloptions>]
+  \mruletv[<keyvaloptions>]
 \end{SourceCode}
 
 These commands share the same keys.\bigskip
@@ -163,27 +163,60 @@ These commands share the same keys.\bigskip
     height & dim & 0pt & Height above the baseline \\
     depth & dim & 0pt & Depth below the baseline \\
     color & tl & black & Color of the rule \\
+    gap-color & tl & white & Color of the gap segments \\
     dash & bool & false & Enables dashed line if true \\
     dash-len & dim & 3pt & Length of the dash segment \\
     gap-len & dim & 2.5pt & Length of the gap between dashes \\
-    leader-type & tl & x & Type of leader (\texttt{\textbackslash xleaders}, \texttt{\textbackslash cleaders}, or \texttt{\textbackslash leaders}) \\ \bottomrule
+    \bottomrule
   \end{tabular}
 \end{center}\bigskip
 
-All of the ``dashed rules'' internally uses \verb|\leaders|, so they behave slightly different from the \verb|\draw[dashed]...| (the command provided by tikz package). 
+The outputs are as follows:
 
 \begin{SourceCode}{Intput}{TeX}
-  \mruleh[height=1pt, width=100pt, color=blue]
-  \mruleh[height=1pt, width=100pt, color=blue, dash=true, leader-type=x]
-  \mruleh[height=1pt, width=100pt, color=blue, dash=true, leader-type=c]
-  \mruleh[height=1pt, width=100pt, color=blue, dash=true, leader-type=aligned]
+  \fboxsep=0pt\fboxrule=.1pt%
+
+  % horizontal rule
+  \fbox{\mruleth[height=1pt, width=55pt, color=blue]}
+  \fbox{\mruleth[height=1pt, width=55pt, color=blue, dash=true]}
+  \fbox{\mruleth[height=1pt, width=57pt, color=blue, dash=true]}
+  \fbox{\mruleth[height=1pt, width=59pt, color=blue, dash=true]}
+
+  % vertical rule
+  \fbox{\mruletv[width=1pt, height=55pt, color=blue]}
+  \fbox{\mruletv[width=1pt, height=55pt, color=blue, dash=true]}
+  \fbox{\mruletv[width=1pt, height=57pt, color=blue, dash=true]}
+  \fbox{\mruletv[width=1pt, height=59pt, color=blue, dash=true]}\bigskip
+
+  % Horizontal: Alternating Black and Cyan segments
+  \mruleth[width=120pt, height=2pt, dash=true, dash-len=6pt, gap-len=6pt, color=black, gap-color=cyan]\bigskip
+
+  % Vertical: Warning Pattern (Yellow and Black)
+  \mruletv[width=3pt, height=50pt, dash=true, dash-len=8pt, gap-len=4pt, color=yellow, gap-color=black]
 \end{SourceCode}
 
 \begin{OutPut}{Output}
-  \mruleh[height=1pt, width=100pt, color=blue]
-  \mruleh[height=1pt, width=100pt, color=blue, dash=true, leader-type=x]
-  \mruleh[height=1pt, width=100pt, color=blue, dash=true, leader-type=c]
-  \mruleh[height=1pt, width=100pt, color=blue, dash=true, leader-type=aligned]
+  \fboxsep=0pt\fboxrule=.1pt%
+  
+  \fbox{\mruleth[height=1pt, width=55pt, color=blue]}
+  \fbox{\mruleth[height=1pt, width=55pt, color=blue, dash=true]}
+  \fbox{\mruleth[height=1pt, width=57pt, color=blue, dash=true]}
+  \fbox{\mruleth[height=1pt, width=59pt, color=blue, dash=true]}
+
+  \fbox{\mruletv[width=1pt, height=55pt, color=blue]}
+  \fbox{\mruletv[width=1pt, height=55pt, color=blue, dash=true]}
+  \fbox{\mruletv[width=1pt, height=57pt, color=blue, dash=true]}
+  \fbox{\mruletv[width=1pt, height=59pt, color=blue, dash=true]}
+
+  \bigskip
+
+  % Horizontal: Alternating Black and Cyan segments
+  \mruleth[width=120pt, height=2pt, dash=true, dash-len=6pt, gap-len=6pt, color=black, gap-color=cyan]
+
+  \bigskip
+
+  % Vertical: Warning Pattern (Yellow and Black)
+  \mruletv[width=3pt, height=50pt, dash=true, dash-len=8pt, gap-len=4pt, color=yellow, gap-color=black]
 \end{OutPut}
 
 \section{License}
