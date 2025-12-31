@@ -331,7 +331,7 @@
       }
 \fi\fi
 
-\newbox\@note@maintext
+\newbox\@undernote@maintext
 \newbox\@undernote@subtext
 \newcounter{undernote@id} \setcounter{undernote@id}{0}
 \DeclareDocumentCommand{\undernote}{ s O{} m +m O{} }{%
@@ -390,52 +390,78 @@
 % 注釈の内部実装
 \long\def\@text@undernote#1#2#3{%
    \hbox{%
-      \def\@UNDATA@vsize{#1}%
-      \ifx\@UNDATA@vsize\@empty%
+      \def\@UNDATA@vsize{#1}% \undernoteの第２引数
+      \ifx\@UNDATA@vsize\@empty% 
+            % 指定なしパターン
+            % \undernoteの第２引数が空かそうでないか
          \expandafter\ifx\csname @UNDATAS@\the\c@undernote@id\endcsname\relax%
+            % １回目のコンパイルではまだ空
+            % →\relaxと比較してスルー
             \def\@UNDATA@vsize{1}%
          \else%
+            % ２回目のコンパイルでは自動設定されている
+            % →\@UNDATAS@12のようなデータを\@UNDATA@vsizeに格納
             \edef\@UNDATA@vsize{\csname @UNDATAS@\the\c@undernote@id\endcsname}%
          \fi%
       \fi%
-      \setbox\@note@maintext\hbox{#2\vphantom{)}}%
-      \setbox\@undernote@subtext\hbox{\notesize@internal@undernote #3}%
+      \setbox\@undernote@maintext\hbox{#2\vphantom{)}}% \undernoteの第３引数
+      \setbox\@undernote@subtext\hbox{\notesize@internal@undernote #3}% \undernoteの第４引数
       \vtop{%
-         \box\@note@maintext%
+         \box\@undernote@maintext% 
          \begingroup%
-         \notesize@internal@undernote%
-         \if@filesw%
-            \dimen@\wd\@undernote@subtext%
-            \advance\dimen@\notesep@internal@undernote\relax%
-            \edef\@tempa{%
-               \write\@auxout{%
-                  \string\undernotedata@internal{\the\c@undernote@id}%
-                     {\noexpand\the\lastxpos}{\noexpand\the\lastypos}%
-                     {\number\dimen@}{\number\ht\@undernote@subtext}{\number\dp\@undernote@subtext}%
-                     {\noexpand\the\c@page}}}%
-            \@tempa%
-         \else
-            \write16{}%
-         \fi
+            \notesize@internal@undernote% 
+            \if@filesw% .auxへの書き出しokかどうか
+               \dimen@\wd\@undernote@subtext%
+               \advance\dimen@\notesep@internal@undernote\relax%
+                     % 注釈の長さと、sepの長さを足す
+                     % 水平方向にどれだけスペースをとっているか
+               \edef\@tempa{%
+                  \write\@auxout{% .auxへの書き出し
+                     \string\undernotedata@internal{\the\c@undernote@id}%
+                        {\noexpand\the\lastxpos}{\noexpand\the\lastypos}%
+                        {\number\dimen@}{\number\ht\@undernote@subtext}{\number\dp\@undernote@subtext}%
+                        {\noexpand\the\c@page}% これで.auxに
+                                             % \undernotedata@internal{<id>}{<xpos>}{<ypos>}{<width of the note>}%
+                                             % {<height of the note>}{<depth of the note>}{<page>}
+                                             % が書き込まれる
+                  }%
+               }%
+               \@tempa%
+            \else%
+               \write16{}% 書き出し不可の場合、何もしない
+            \fi%
          \endgroup%
-         \vskip\p@%
-         \hline@undernote@par%
-         \hbox{\notesize@internal@undernote%
-            \hskip\noterulehshift@internal@undernote%
-            \count@\@UNDATA@vsize\relax \advance\count@\m@ne%
+         \hline@undernote@par% アンダーライン
+         \hbox{\notesize@internal@undernote% 
+               % サイズ指定
+            \hskip\noterulehshift@internal@undernote% 
+               % 横に少しずらす
+            \count@\@UNDATA@vsize\relax \advance\count@\m@ne% 
+               % \count@ = 現在の段 - 1 
             \dimen@\noteshift@internal@undernote\relax \multiply\dimen@\count@%
-            \advance\dimen@\notepos@internal@undernote\relax%
+               % \count@*\dimen@ i.e. 
+               % ノートの縦幅だけ下へ
+            \advance\dimen@\notepos@internal@undernote\relax% 
+               % 縦線の長さの分さらに下へ
             \vlines@undernote@par%
-            \hskip\p@%
-            \hbox to\z@{\lower.38\zw\box\@undernote@subtext\hss}}}}}
+               % 縦線を出力
+            \hbox to \z@ {\lower.38\zw% 
+                  % 注釈テキストを.38\zw下へ
+               \box\@undernote@subtext\hss%
+                  % 注釈配置
+            }%
+         }%
+      }%
+   }%
+}
 
 \newcount\@UNDATA@min
 \newcount\@UNDATA@max
 \global\@UNDATA@max -\@M
 \global\let\@UNDATA@idlist\@empty
 \let\@UNDATA@elt\relax
-\def\undernotedata@internal#1#2#3#4#5#6#7{%%% #1: id, #2: xpos, #3: ypos, #4: width of note,
-                                          %%% #5: height of note, #6: depth of note, #7: page
+\def\undernotedata@internal#1#2#3#4#5#6#7{%%% #1: id, #2: xpos, #3: ypos, #4: width of the note,
+                                          %%% #5: height of the note, #6: depth of the note, #7: page
    \@ifundefined{@UNDATA@#1}%
       {\@tempcnta\@UNDATA@max \advance\@tempcnta\@ne
        \ifnum\@tempcnta=#1\relax
@@ -460,12 +486,12 @@
  \ifnum\@UNDATA@max<\z@\else
    \xdef\@UNDATA@idlist{\@UNDATA@idlist\@UNDATA@elt{\the\@UNDATA@min}{\the\@UNDATA@max}}%
    \begingroup
-   \let\@UNDATA@elt\@checknotedata
+   \let\@UNDATA@elt\@check@undernotedata
    \@UNDATA@idlist
    \endgroup
  \fi}
 
-\def\@checknotedata#1#2{%
+\def\@check@undernotedata#1#2{%
    \def\@currpage{-10000}%
    \@tempcnta\z@  \@tempcntb\z@
    \@tempdima-\p@ \@tempdimb-\p@
@@ -474,7 +500,7 @@
    \count@#1\relax \advance\count@\m@ne
    \@whilenum\count@<#2\do{%
       \advance\count@\@ne
-      \@checknotedata@split\count@
+      \@check@undernotedata@split\count@
       \def\@tempz{T}%
       \ifnum\@currpage=\@thispage\relax
          \ifdim\@thisy sp<\@tempdima \def\@tempz{F}\fi
@@ -496,16 +522,16 @@
          \advance\@tempdimb  \@UNDATA@yfuzz\relax
       \fi}%
    \edef\@linelist{\@linelist\@elt@udnote{\the\@tempcnta}{\the\@tempcntb}}%
-   \let\@elt@udnote\@checknotedata@elt
+   \let\@elt@udnote\@check@undernotedata@elt
    \@linelist}
 
 \def\@UNDATA@yfuzz{3\p@}
 
-\def\@checknotedata@split#1{%
-   \expandafter\expandafter\expandafter\@checknotedata@split@
+\def\@check@undernotedata@split#1{%
+   \expandafter\expandafter\expandafter\@check@undernotedata@split@
       \csname @UNDATA@\number#1\endcsname 000000\@nnil}
 
-\def\@checknotedata@split@#1#2#3#4#5#6#7\@nnil{%
+\def\@check@undernotedata@split@#1#2#3#4#5#6#7\@nnil{%
    \def\@thisx{#1}%
    \def\@thisy{#2}%
    \def\@thiswd{#3}%
@@ -513,11 +539,11 @@
    \def\@thisdp{#5}%
    \def\@thispage{#6}}
 
-\def\@checknotedata@elt#1#2{%
+\def\@check@undernotedata@elt#1#2{%
    \count@#2\relax \advance\count@\@ne
    \@whilenum\count@>#1\do{%
       \advance\count@\m@ne
-      \@checknotedata@split\count@
+      \@check@undernotedata@split\count@
       \dimen@\@thisx sp\relax
       \advance\dimen@ \@thiswd sp\relax
       \advance\dimen@\noterulehsize@internal@undernote\relax
@@ -527,7 +553,7 @@
       \@tempcnta\count@
       \@whilenum\@tempcnta<#2\do{%
          \advance\@tempcnta\@ne
-         \@checknotedata@split\@tempcnta
+         \@check@undernotedata@split\@tempcnta
          \ifdim\@thisx sp<\dimen@
             \@tempdima\noteshift@internal@undernote\relax
             \@tempdimb\@thisdp sp\relax
