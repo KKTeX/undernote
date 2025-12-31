@@ -8,8 +8,8 @@
 
 ## Overview / 概要
 
-`modernruler` provides enhanced ruler commands, including `\mhrule`, `\mvrule`, and `\undernote`. These commands are designed to be more flexible than standard LaTeX rules, supporting key-value options for styling and full compatibility with vertical writing modes.
-`modernruler` は、標準の罫線コマンドを拡張した `\mhrule`、`\mvrule`、および `\undernote` を提供します。色やスタイルの指定をキー値オプションで行える柔軟性を持ち、縦書き環境にも完全に対応しています。
+`modernruler` provides enhanced ruler commands, including `\mruleth`, `\mruletv`, and `\undernote`. These commands are designed to be more flexible than standard LaTeX rules, supporting key-value options for styling and full compatibility with vertical writing modes.
+`modernruler` は、標準の罫線コマンドを拡張した `\mruleth`、`\mruletv`、および `\undernote` を提供します。色やスタイルの指定をキー値オプションで行える柔軟性を持ち、縦書き環境にも完全に対応しています。
 
 - **Version**: 1.0.0
 - **Date**: 2025-12-28
