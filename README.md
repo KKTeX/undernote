@@ -25,7 +25,7 @@
 This package was inspired by discussions on TeX Forum concerning
 undernote-like constructions using rules.
 
-An improved approach was later presented by Mr. YusukeTerada,
+An improved approach was later presented by Mr. Yusuke Terada,
 which clarified several implementation details.
 
 The present package is a complete reimplementation and extension,
