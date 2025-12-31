@@ -67,30 +67,30 @@
   \ifnum#1=1%
    \let\wrap@undernote\wrap@undernote@styleA%
    \let\wrap@undernote@par\wrap@undernote@par@styleA%
-   \def\hline@undernote@par{\mruleh[height=\noterulethickness@internal@undernote, width=\undernote@textlen@tempo]}%
+   \def\hline@undernote@par{\mruleth[height=\noterulethickness@internal@undernote, width=\undernote@textlen@tempo]}%
    \def\vlines@undernote@par{%
-      \mrulev[height=\dimen@, width=\noterulethickness@internal@undernote, depth=0pt]%
-      \mruleh[height=\noterulethickness@internal@undernote, width=\noterulehsize@internal@undernote, depth=0pt, 
+      \mruletv[height=\dimen@, width=\noterulethickness@internal@undernote, depth=0pt]%
+      \mruleth[height=\noterulethickness@internal@undernote, width=\noterulehsize@internal@undernote, depth=0pt, 
       dash=true, dash-len=.01pt, gap-len=0pt]%
    }%
    \else\ifnum#1=2
       \let\wrap@undernote\wrap@undernote@styleB%
       \let\wrap@undernote@par\wrap@undernote@par@styleB%
-      \def\hline@undernote@par{\mruleh[height=\noterulethickness@internal@undernote, width=\undernote@textlen@tempo, dash=true]}%
+      \def\hline@undernote@par{\mruleth[height=\noterulethickness@internal@undernote, width=\undernote@textlen@tempo, dash=true]}%
          %%% dash=true, dash-len=.01pt, gap-len=0pt
          %%% としている理由は、呼び出しがvmode内部であるため、
          %%% 内部的に\vruleを使わせるという技術的意図。
       \def\vlines@undernote@par{%
-         \mrulev[height=\dimen@, width=\noterulethickness@internal@undernote, depth=0pt ,dash=true]%
-         \mruleh[height=\noterulethickness@internal@undernote, width=\noterulehsize@internal@undernote, depth=0pt, dash=true]%
+         \mruletv[height=\dimen@, width=\noterulethickness@internal@undernote, depth=0pt ,dash=true]%
+         \mruleth[height=\noterulethickness@internal@undernote, width=\noterulehsize@internal@undernote, depth=0pt, dash=true]%
       }%
       \else
          \let\wrap@undernote\wrap@undernote@styleC%
          \let\wrap@undernote@par\wrap@undernote@par@styleC%
-         \def\hline@undernote@par{\mruleh[height=\noterulethickness@internal@undernote, width=\undernote@textlen@tempo]}%
+         \def\hline@undernote@par{\mruleth[height=\noterulethickness@internal@undernote, width=\undernote@textlen@tempo]}%
          \def\vlines@undernote@par{%
-            \mrulev[height=\dimen@, width=\noterulethickness@internal@undernote, depth=0pt]%
-            \mruleh[height=\noterulethickness@internal@undernote, width=\noterulehsize@internal@undernote, depth=0pt,
+            \mruletv[height=\dimen@, width=\noterulethickness@internal@undernote, depth=0pt]%
+            \mruleth[height=\noterulethickness@internal@undernote, width=\noterulehsize@internal@undernote, depth=0pt,
             dash=true, dash-len=.01pt, gap-len=0pt]%
          }%
    \fi\fi
@@ -134,108 +134,117 @@
     leader-type .initial:n = x,
   }
 
-% 水平モード用 (テキスト中の垂直棒)
-\NewDocumentCommand{\mrulev}{O{}}
+% 変数の追加定義（計算用）
+\dim_new:N \l__mrule_h_remaining_dim
+
+\NewDocumentCommand{\mruleth}{O{}}
   {
     \group_begin:
+    % 1. キーの受け取り
     \keys_set:nn { modernrule } { #1 }
-    \cs_set:Npx \__mrule_use_leader: 
+    \color{\l_mrule_color_tl}
+    
+    % 垂直モードでの隙間調整
+    \ifvmode \nointerlineskip \fi
+    
+    % 2. dashフラグによる分岐
+    \bool_if:NTF \l_mrule_dash_bool
       {
-        \str_case:Vn \l_mrule_leader_type_tl
+        % --- 点線描画モード (Ti{k}Z-style) ---
+        \hbox_to_wd:nn { \l_mrule_width_dim }
           {
-            { x } { \xleaders }
-            { c } { \cleaders }
-            { aligned } { \leaders }
+            \dim_set:Nn \l__mrule_h_remaining_dim { \l_mrule_width_dim }
+            \dim_while_do:nNnn { \l__mrule_h_remaining_dim } > { 0pt }
+              {
+                \dim_compare:nNnTF { \l__mrule_h_remaining_dim } > { \l_mrule_dash_len_dim }
+                  {
+                    % A. 残りが実線1本分より長い場合
+                    \vrule width \l_mrule_dash_len_dim height \l_mrule_height_dim depth \l_mrule_depth_dim
+                    \dim_sub:Nn \l__mrule_h_remaining_dim { \l_mrule_dash_len_dim }
+                    
+                    % 空白を置くスペースがあるか確認
+                    \dim_compare:nNnTF { \l__mrule_h_remaining_dim } > { \l_mrule_gap_len_dim }
+                      {
+                        \skip_horizontal:N \l_mrule_gap_len_dim
+                        \dim_sub:Nn \l__mrule_h_remaining_dim { \l_mrule_gap_len_dim }
+                      }
+                      {
+                        % 空白を入れるとハミ出る場合は、残りをスキップして終了
+                        \skip_horizontal:N \l__mrule_h_remaining_dim
+                        \dim_set:Nn \l__mrule_h_remaining_dim { 0pt }
+                      }
+                  }
+                  {
+                    % B. 残りが実線1本分以下の場合は、残りの長さ全部を塗って終了
+                    \vrule width \l__mrule_h_remaining_dim height \l_mrule_height_dim depth \l_mrule_depth_dim
+                    \dim_set:Nn \l__mrule_h_remaining_dim { 0pt }
+                  }
+              }
+            \hss 
           }
       }
-    \dim_compare:nNnTF { \l_mrule_width_dim } > { 0pt } {
-    \color{\l_mrule_color_tl}
-    \bool_if:NTF \l_mrule_dash_bool
-      {\ifvmode \nointerlineskip \fi%
-      \vbox_to_ht:nn { \l_mrule_height_dim + \l_mrule_depth_dim }
-         {%
-            \dim_compare:nNnTF { \l_mrule_height_dim + \l_mrule_depth_dim } < { \l_mrule_dash_len_dim + \l_mrule_gap_len_dim }
-            { \dim_compare:nNnTF { \l_mrule_height_dim + \l_mrule_depth_dim } < {\l_mrule_dash_len_dim} {
-               % A-1. 短すぎる時はただの棒
-               \hrule width \l_mrule_width_dim height \l_mrule_height_dim depth \l_mrule_depth_dim
-            }{
-               % A-2. 短すぎる時はただの棒
-               \hrule width \l_mrule_width_dim height \l_mrule_dash_len_dim
-            } 
-            }{ % B. 通常の破線ロジック
-               % \hrule width \l_mrule_width_dim height \l_mrule_dash_len_dim
-               \__mrule_use_leader: \vbox:n 
-               {% 注意！こっちは \hrule
-                  \hrule width \l_mrule_width_dim height \l_mrule_dash_len_dim
-                  \skip_vertical:N \l_mrule_gap_len_dim
-               }\vfill%
-         }}\ifvmode \nointerlineskip \fi%
+      {
+         % --- 実線描画モード (Solid line) ---
+         \hbox_to_wd:nn { \l_mrule_width_dim } {
+            \vrule width \l_mrule_width_dim height \l_mrule_height_dim depth \l_mrule_depth_dim
+         }
       }
-      {% 注意！こっちは \vrule
-         \ifvmode \nointerlineskip \fi%
-         \noindent\vrule width \l_mrule_width_dim height \l_mrule_height_dim depth \l_mrule_depth_dim
-         \ifvmode \nointerlineskip \fi%
-      }
-    }{%
-      \ifvmode \nointerlineskip \fi%
-      \noindent\vrule width \l_mrule_width_dim height \l_mrule_height_dim depth \l_mrule_depth_dim
-      \ifvmode \nointerlineskip \fi%
-    }
+      
+    \ifvmode \nointerlineskip \fi
     \group_end:
   }
 
-% 垂直モード用 (段落間の水平線)
-\NewDocumentCommand{\mruleh}{O{}}
+% 垂直方向用の変数
+\dim_new:N \l__mrule_v_remaining_dim
+
+\NewDocumentCommand{\mruletv}{O{}}
   {
     \group_begin:
     \keys_set:nn { modernrule } { #1 }
-    \cs_set:Npx \__mrule_use_leader: 
-      {
-        \str_case:Vn \l_mrule_leader_type_tl
-          {
-            { x } { \xleaders }
-            { c } { \cleaders }
-            { aligned } { \leaders }
-          }
-      }
-    \dim_compare:nNnTF { \l_mrule_width_dim } > { 0pt } {
     \color{\l_mrule_color_tl}
     
-    % 幅の計算ロジックを修正
-    \dim_compare:nNnTF { \l_mrule_width_dim } = { 0pt }
-      { \dim_set:Nn \l_mrule_total_width_dim { \linewidth } }
-      { \dim_set:Nn \l_mrule_total_width_dim { \l_mrule_width_dim } }
+    % height パラメータを全体の高さ（L）として扱う
+    \dim_set:Nn \l__mrule_v_remaining_dim { \l_mrule_height_dim }
     
     \bool_if:NTF \l_mrule_dash_bool
-      {\ifvmode \nointerlineskip \fi%
-         \hbox_to_wd:nn { \l_mrule_total_width_dim }
-            {%
-               \dim_compare:nNnTF { \l_mrule_total_width_dim } < { \l_mrule_dash_len_dim + \l_mrule_gap_len_dim } {
-                  \dim_compare:nNnTF { \l_mrule_total_width_dim } < { \l_mrule_dash_len_dim } {
-                     % A-1. 短すぎる時はただの棒
-                     \noindent\vrule width \l_mrule_total_width_dim height \l_mrule_height_dim depth \l_mrule_depth_dim
-                  }{ % A-2. 短すぎる時はただの棒
-                     \noindent\vrule width \l_mrule_dash_len_dim height \l_mrule_height_dim depth \l_mrule_depth_dim
+      {
+        % --- 垂直点線モード ---
+        \vbox:n
+          {
+            \dim_while_do:nNnn { \l__mrule_v_remaining_dim } > { 0pt }
+              {
+                \dim_compare:nNnTF { \l__mrule_v_remaining_dim } > { \l_mrule_dash_len_dim }
+                  {
+                    % A. 実線セグメントを描画
+                    \hrule width \l_mrule_width_dim height \l_mrule_dash_len_dim
+                    \dim_sub:Nn \l__mrule_v_remaining_dim { \l_mrule_dash_len_dim }
+                    
+                    % 空白セグメント
+                    \dim_compare:nNnTF { \l__mrule_v_remaining_dim } > { \l_mrule_gap_len_dim }
+                      {
+                        \skip_vertical:N \l_mrule_gap_len_dim
+                        \dim_sub:Nn \l__mrule_v_remaining_dim { \l_mrule_gap_len_dim }
+                      }
+                      {
+                        \skip_vertical:N \l__mrule_v_remaining_dim
+                        \dim_set:Nn \l__mrule_v_remaining_dim { 0pt }
+                      }
                   }
-            }{ % B. 通常の破線ロジック
-               % \noindent\vrule width \l_mrule_dash_len_dim height \l_mrule_height_dim depth \l_mrule_depth_dim
-               \__mrule_use_leader: \hbox:n 
-               {% 注意！こっちは \vrule
-                  \vrule width \l_mrule_dash_len_dim height \l_mrule_height_dim depth \l_mrule_depth_dim
-                  \skip_horizontal:N \l_mrule_gap_len_dim
-               }\hfill%
-            }
-         }\ifvmode \nointerlineskip \fi%
+                  {
+                    % B. 残り全部を塗る
+                    \hrule width \l_mrule_width_dim height \l__mrule_v_remaining_dim
+                    \dim_set:Nn \l__mrule_v_remaining_dim { 0pt }
+                  }
+              }
+          }
       }
-      {% 注意！こっちは \hrule
-         \ifvmode \nointerlineskip \fi%
-         \hrule width \l_mrule_total_width_dim height \l_mrule_height_dim depth \l_mrule_depth_dim
-         \ifvmode \nointerlineskip \fi%
+      {
+        % --- 垂直実線モード ---
+        \vbox:n
+        {
+         \hrule width \l_mrule_width_dim height \l_mrule_height_dim
+        }
       }
-    }{\ifvmode \nointerlineskip \fi%
-      \hrule width \l_mrule_total_width_dim height \l_mrule_height_dim depth \l_mrule_depth_dim
-      \ifvmode \nointerlineskip \fi%
-    }
     \group_end:
   }
 
@@ -297,30 +306,30 @@
 \ifnum\noteparstyle@internal@undernote=1
    \let\wrap@undernote\wrap@undernote@styleA
    \let\wrap@undernote@par\wrap@undernote@par@styleA
-   \def\hline@undernote@par{\mruleh[height=\noterulethickness@internal@undernote, width=\undernote@textlen@tempo]}%
+   \def\hline@undernote@par{\mruleth[height=\noterulethickness@internal@undernote, width=\undernote@textlen@tempo]}%
    \def\vlines@undernote@par{%
    %%% dash=true, dash-len=.01pt, gap-len=0pt
    %%% としている理由は、呼び出しがvmode内部であるため、
    %%% 内部的に\vruleを使わせるという技術的意図。
-      \mrulev[height=\dimen@, width=\noterulethickness@internal@undernote, depth=0pt]%
-      \mruleh[height=\noterulethickness@internal@undernote, width=\noterulehsize@internal@undernote, depth=0pt, 
+      \mruletv[height=\dimen@, width=\noterulethickness@internal@undernote, depth=0pt]%
+      \mruleth[height=\noterulethickness@internal@undernote, width=\noterulehsize@internal@undernote, depth=0pt, 
       dash=true, dash-len=.01pt, gap-len=0pt]%
    }
 \else\ifnum\noteparstyle@internal@undernote=2
    \let\wrap@undernote\wrap@undernote@styleB
    \let\wrap@undernote@par\wrap@undernote@par@styleB
-   \def\hline@undernote@par{\mruleh[height=\noterulethickness@internal@undernote, width=\undernote@textlen@tempo, dash=true]}%
+   \def\hline@undernote@par{\mruleth[height=\noterulethickness@internal@undernote, width=\undernote@textlen@tempo, dash=true]}%
    \def\vlines@undernote@par{%
-      \mrulev[height=\dimen@, width=\noterulethickness@internal@undernote, depth=0pt ,dash=true]%
-      \mruleh[height=\noterulethickness@internal@undernote, width=\noterulehsize@internal@undernote, depth=0pt, dash=true]%
+      \mruletv[height=\dimen@, width=\noterulethickness@internal@undernote, depth=0pt ,dash=true]%
+      \mruleth[height=\noterulethickness@internal@undernote, width=\noterulehsize@internal@undernote, depth=0pt, dash=true]%
    }
    \else
       \let\wrap@undernote\wrap@undernote@styleC
       \let\wrap@undernote@par\wrap@undernote@par@styleC
-      \def\hline@undernote@par{\mruleh[height=\noterulethickness@internal@undernote, width=\undernote@textlen@tempo]}%
+      \def\hline@undernote@par{\mruleth[height=\noterulethickness@internal@undernote, width=\undernote@textlen@tempo]}%
       \def\vlines@undernote@par{%
-         \mrulev[height=\dimen@, width=\noterulethickness@internal@undernote, depth=0pt]%
-         \mruleh[height=\noterulethickness@internal@undernote, width=\noterulehsize@internal@undernote, depth=0pt,
+         \mruletv[height=\dimen@, width=\noterulethickness@internal@undernote, depth=0pt]%
+         \mruleth[height=\noterulethickness@internal@undernote, width=\noterulehsize@internal@undernote, depth=0pt,
          dash=true, dash-len=.01pt, gap-len=0pt]%
       }
 \fi\fi
@@ -413,26 +422,12 @@
          \fi
          \endgroup%
          \vskip\p@%
-         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-         % ベース
-         % \hrule \@height\noterulethickness@internal@undernote%
-         % モダン
-         % \mruleh[height=\noterulethickness@internal@undernote, width=\undernote@textlen@tempo ,dash=true]%
-         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
          \hline@undernote@par%
          \hbox{\notesize@internal@undernote%
             \hskip\noterulehshift@internal@undernote%
             \count@\@UNDATA@vsize\relax \advance\count@\m@ne%
             \dimen@\noteshift@internal@undernote\relax \multiply\dimen@\count@%
             \advance\dimen@\notepos@internal@undernote\relax%
-            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-            % ベース
-            % \vrule \@height\dimen@ \@width\noterulethickness@internal@undernote \@depth\z@%
-            % \vrule \@height\noterulethickness@internal@undernote \@width\noterulehsize@internal@undernote \@depth\z@%
-            % モダン
-            % \mrulev[height=\dimen@, width=\noterulethickness@internal@undernote, depth=0pt ,dash=true]%
-            % \mruleh[height=\noterulethickness@internal@undernote, width=\noterulehsize@internal@undernote, depth=0pt, dash=true]%
-            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             \vlines@undernote@par%
             \hskip\p@%
             \hbox to\z@{\lower.38\zw\box\@undernote@subtext\hss}}}}}

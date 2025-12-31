@@ -1,25 +1,20 @@
-\documentclass[tate]{jlreq}
+\documentclass{jlreq}
 \usepackage[parstyle=2,noteoverhang=3em]{modernruler}
 
 \begin{document}
 \fboxsep=0pt\fboxrule=.1pt%
 
-ああああ\undernote*{ああああ}{あああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああ}あ\undernote{ああああああ}{あああああ}ああああああああ
+あああああ\undernote{あああ}{あああああ}あああ
 
-\mruleh[height=1pt, dash=true, leader-type=aligned, width=10pt]
+% 通常の実線
+\mruleth[height=1pt, width=8cm, color=blue]
 
+% 破線（dashオプション）
+\mruleth[height=2pt, width=8cm, color=red, dash=true, dash-len=5pt, gap-len=3pt]
 
-\bigskip
+% 文中で垂直線を入れる
+ここから垂直線 \mruletv[height=\zw, depth=1.5\zw, width=1pt, color=green] です。
 
-% \mrulev[width=8mm, height=10pt, dash=true]
-
-\mrulev[width=8mm, height=1pt, leader-type=aligned, dash=true]
-
-\bigskip
-
-\mruleh[height=1pt, width=19pt, color=blue, dash=true, dash-len=2pt, gap-len=2pt, leader-type=aligned]
-
-\mruleh[height=1pt, width=19pt, color=blue, dash=true, dash-len=3pt, gap-len=3pt, leader-type=aligned]
-
-\mruleh[height=1pt, color=red, width=10pt] \par
+% 破線の垂直線
+点線の区切り \mruletv[height=2\zw, width=1.5pt, color=orange, dash=true, dash-len=2pt, gap-len=1pt] を作ります。
 \end{document}
