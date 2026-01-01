@@ -1,10 +1,31 @@
-\documentclass[tate]{jlreq}
-\usepackage[parstyle=2,noteoverhang=3em]{modernruler}
+\documentclass{jlreq}
+\usepackage[parstyle=0,noteoverhang=7em]{modernruler}
 
 \begin{document}
 \fboxsep=0pt\fboxrule=.1pt%
 
-あああああ\undernote[3]{あああ}{あああああ}あ\undernote{あ}{ああああ}あ
+In this single paragraph, we deliberately place many annotated terms to
+stress-test the undernote mechanism, starting with a
+\undernote{concept}{A brief explanation of the main concept}
+that appears early in the line, followed closely by another\\
+\undernote{idea}{A slightly longer explanatory note that is expected to
+interact with nearby notes} to encourage horizontal overlap detection.
+As the sentence continues, we insert a fixed-level annotation such as
+\undernote[2]{method}{This note is forced onto the second vertical level}
+to verify that manual level assignment overrides automatic stacking,
+and later a short
+\undernote{term}{Short note}
+next to a much longer
+\undernote*{expression}{This is a considerably longer explanatory note
+designed to increase the occupied width and push subsequent notes
+downward in the vertical stacking algorithm}.
+Near the end of the paragraph, we add one more fixed example,
+\undernote[3]{result}{A third-level note used to confirm deep stacking},
+followed immediately by an automatic one,
+\undernote*{observation}{This final note should be placed at a safe
+vertical distance determined by the collision analysis performed
+during the previous compilation run}.
+
 
 \fbox{\mruleth[height=1pt, width=55pt, color=blue]}
 

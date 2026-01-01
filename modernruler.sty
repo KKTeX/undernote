@@ -460,6 +460,7 @@
                   % 注釈配置
             }%
          }%
+         \vskip .3\dimexpr\f@size pt\relax%
       }%
    }%
 }
@@ -501,13 +502,13 @@
 }
 
 \def\checkundernotedata{%
- \ifnum\@UNDATA@max<\z@\else%
-   \xdef\@UNDATA@idlist{\@UNDATA@idlist\@UNDATA@elt{\the\@UNDATA@min}{\the\@UNDATA@max}}%
-   \begingroup%
-      \let\@UNDATA@elt\@check@undernotedata%
-      \@UNDATA@idlist%
-   \endgroup%
- \fi%
+   \ifnum\@UNDATA@max<\z@\else%
+      \xdef\@UNDATA@idlist{\@UNDATA@idlist\@UNDATA@elt{\the\@UNDATA@min}{\the\@UNDATA@max}}%
+      \begingroup%
+         \let\@UNDATA@elt\@check@undernotedata%
+         \@UNDATA@idlist%
+      \endgroup%
+   \fi%
 }
 
 \def\@check@undernotedata#1#2{%
