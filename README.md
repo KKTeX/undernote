@@ -8,11 +8,11 @@
 
 ## Overview / 概要
 
-`modernruler` provides enhanced ruler commands, including `\mruleth`, `\mruletv`, and `\undernote`. These commands are designed to be more flexible than standard LaTeX rules, supporting key-value options for styling and full compatibility with vertical writing modes.
+`modernruler` provides enhanced ruler commands, including `\mruleth`, `\mruletv`, and `\undernote`. These commands are designed to be more flexible than standard LaTeX rules, supporting key-value options for styling and full compatibility with vertical writing modes.<br>
 `modernruler` は、標準の罫線コマンドを拡張した `\mruleth`、`\mruletv`、および `\undernote` を提供します。色やスタイルの指定をキー値オプションで行える柔軟性を持ち、縦書き環境にも完全に対応しています。
 
-- **Version**: 1.0.0
-- **Date**: 2025-12-28
+- **Version**: 1.1.0
+- **Date**: 2025-01-06
 - **Author**: Kosei Kawaguchi (a.k.a. KKTeX)
 - **License**: MIT
 - **Repository**: [https://github.com/KKTeX/modernruler](https://github.com/KKTeX/modernruler)
@@ -56,6 +56,10 @@ responsibility of the author.
 
 ## Prerequisites / 前提条件
 
+This package only supports LuaLaTeX.<br>
+本パッケージはLuaLaTeXのみをサポートしています。
+
+
 **Dependencies / 依存パッケージ:**
 - `kvoptions`, `varwidth`, `tcolorbox`
 
@@ -63,18 +67,18 @@ responsibility of the author.
 
 ## Usage / 使用方法
 
-For detailed usage and examples, please refer to the documentation and source files.
+For detailed usage and examples, please refer to the documentation and source files.<br>
 具体的な使用方法や例については、ドキュメントやソースファイルを参照してください。
 
 ---
 
 ## License / ライセンス
 
-This package is licensed under the **MIT License**.
+This package is licensed under the **MIT License**.<br>
 本パッケージは **MITライセンス** のもとで公開されています。
 
 ```text
-Copyright (c) 2025 Kosei Kawaguchi
+Copyright (c) 2025-2026 Kosei Kawaguchi
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

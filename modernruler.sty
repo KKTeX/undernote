@@ -25,25 +25,16 @@
 
 
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesPackage{modernruler}[2025/12/28, Version 1.1.0]
+\ProvidesPackage{modernruler}[2025/01/06, Version 1.1.0]
 
-%%% unit
+%%% parameters
 \unless\ifdefined\zw
-  \newdimen\zw \zw=1em
+   \newdimen\zw
+   \zw=1em
 \fi
-\ifdefined\ltjgetparameter
-\else
-  \newcommand{\ltjgetparameter}[1]{0}
+\unless\ifdefined\ltjgetparameter
+   \newcommand{\ltjgetparameter}[1]{4}
 \fi
-
-%%% Engine
-\RequirePackage{ifuptex}
-\RequirePackage{ifluatex}
-\ifuptex
-  \def\zw{zw}\def\zh{zh}
-\else\ifptex
-  \def\zw{zw}\def\zh{zh}
-\fi\fi
 
 %%% basical settings
 \RequirePackage{kvoptions} 
@@ -313,19 +304,19 @@
 {%
    \FramedBox@undernote{%
       \parbox[t]{\dimexpr\undernote@textlen@tempo - \noterulehsize@internal@undernote - \noterulehshift@internal@undernote + \noteoverhang@internal@undernote\relax}%
-      {\setlength{\baselineskip}{.2153\zw}\setlength{\parindent}{1em}#1}}%
+      {\setlength{\baselineskip}{.2153\zw}#1}}%
 }}
 \NewDocumentCommand{\wrap@undernote@par@styleB}{ +m }{%
 {%
    \DashedBox@undernote{%
       \parbox[t]{\dimexpr\undernote@textlen@tempo - \noterulehsize@internal@undernote - \noterulehshift@internal@undernote + \noteoverhang@internal@undernote\relax}%
-      {\setlength{\baselineskip}{.2153\zw}\setlength{\parindent}{1em}#1}}%
+      {\setlength{\baselineskip}{.2153\zw}#1}}%
 }}
 \NewDocumentCommand{\wrap@undernote@par@styleC}{ +m }{%
 {%
    \NoframeBox@undernote{%
       \parbox[t]{\dimexpr\undernote@textlen@tempo - \noterulehsize@internal@undernote - \noterulehshift@internal@undernote + \noteoverhang@internal@undernote\relax}%
-      {\setlength{\baselineskip}{.2153\zw}\setlength{\parindent}{1em}#1}}%
+      {\setlength{\baselineskip}{.2153\zw}#1}}%
 }}
 \NewDocumentCommand{\wrap@undernote@styleA}{ +m }{{\FramedBox@undernote{#1}}}
 \NewDocumentCommand{\wrap@undernote@styleB}{ +m }{{\DashedBox@undernote{#1}}}
