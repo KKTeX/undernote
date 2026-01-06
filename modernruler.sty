@@ -25,7 +25,25 @@
 
 
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesPackage{modernruler}[2025/12/28, Version 1.0.0]
+\ProvidesPackage{modernruler}[2025/12/28, Version 1.1.0]
+
+%%% unit
+\unless\ifdefined\zw
+  \newdimen\zw \zw=1em
+\fi
+\ifdefined\ltjgetparameter
+\else
+  \newcommand{\ltjgetparameter}[1]{0}
+\fi
+
+%%% Engine
+\RequirePackage{ifuptex}
+\RequirePackage{ifluatex}
+\ifuptex
+  \def\zw{zw}\def\zh{zh}
+\else\ifptex
+  \def\zw{zw}\def\zh{zh}
+\fi\fi
 
 %%% basical settings
 \RequirePackage{kvoptions} 
