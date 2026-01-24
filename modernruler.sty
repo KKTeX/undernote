@@ -25,7 +25,7 @@
 
 
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesPackage{modernruler}[2025/01/06, Version 1.1.0]
+\ProvidesPackage{modernruler}[2026/01/26, Version 1.2.0]
 
 %%% parameters
 \unless\ifdefined\zw
@@ -48,7 +48,7 @@
 }
 \DeclareStringOption[\footnotesize]{notesize}
 \DeclareStringOption[3mm]{notepos}
-\DeclareStringOption[4mm]{noteshift}
+\DeclareStringOption[1mm]{noteshift}
 \DeclareStringOption[.4pt]{noterulethickness}
 \DeclareStringOption[1.5mm]{noterulehshift}
 \DeclareStringOption[1.5mm]{noterulehsize}
@@ -291,14 +291,14 @@
 }{#2}
 \DeclareTotalTCBox{\NoframeBox@undernote}{ O{} +m }{%
   on line,arc=0pt,
-  sharp corners,boxsep=0mm,
-  left=.3mm,right=.3mm,top=0.3mm,bottom=0.3mm,
+  sharp corners,boxsep=-.5mm,
+  left=.8mm,right=.8mm,top=0.3mm,bottom=0.3mm,
   colback=white,colframe=white,
   enhanced,before={\hspace*{-.1722\zw}},
   #1
 }{#2}
 
-\newlength{\undernote@textlen@tempo}
+\newlength{\undernote@textlen@tempo}\newlength{\undernote@textdepth@tempo}
 
 \NewDocumentCommand{\wrap@undernote@par@styleA}{ +m }{%
 {%
@@ -360,42 +360,45 @@
       %%% #5: どういう線にするか
    \def\key@undernote@ruler{#5}%
    \settowidth{\undernote@textlen@tempo}{#3}%
+   \settodepth{\undernote@textdepth@tempo}{#3}%
    \begingroup%
    \stepcounter{undernote@id}%
    \ifmmode%
       \@note@save@conters%
       \savepos%
-      \expandafter\@math@undernote%
+      \expandafter\@math@undernote
    \else%
       \leavevmode%
       \savepos%
-      \expandafter\@text@undernote%
+      \expandafter\@text@undernote
    \fi%
    {#2}{#3}{%
       \ifnum\ltjgetparameter{direction}=4%
          \begin{varwidth}[t]{\maxdimen}%
             \IfBooleanTF{#1}{\wrap@undernote@par{#4}}{\wrap@undernote{#4}}%
          \end{varwidth}%
-     \else%
+      \else%
          \raisebox{.38\zw}{%
             \begin{varwidth}[t]{\maxdimen}%
                \IfBooleanTF{#1}{\wrap@undernote@par{#4}}{\wrap@undernote{#4}}%
             \end{varwidth}%
          }%
-     \fi%
-     }%
-   \endgroup}
+      \fi%
+   }%
+   \endgroup%
+}
 
 % 名称カウンタ
 \def\@note@save@conters{%
-   \begingroup
-   \def\@elt@udnote##1{%
+   \begingroup%
+   \def\@elt##1{%
       \expandafter\ifx\csname c@##1\endcsname\c@page\else
          \csname c@##1\endcsname\the\csname c@##1\endcsname\relax
       \fi}%
    \edef\@tempa{\cl@@ckpt}%
-   \expandafter\endgroup
-   \expandafter\def\expandafter\@note@restore@counters\expandafter{\@tempa}}
+   \expandafter\endgroup%
+   \expandafter\def\expandafter\@note@restore@counters\expandafter{\@tempa}%
+}
 
 % 数式モードの場合への対応
 \def\@math@undernote#1#2#3{%
@@ -449,6 +452,7 @@
                \write16{}% 書き出し不可の場合、何もしない
             \fi%
          \endgroup%
+         \vskip1pt%
          \hline@undernote@par% アンダーライン
          \hbox{\notesize@internal@undernote% 
                % サイズ指定
@@ -525,7 +529,7 @@
    \@tempcnta\z@ \@tempcntb\z@%
    \@tempdima-\p@ \@tempdimb-\p@%
    \let\@linelist\@empty%
-   \let\@elt@udnote\relax%
+   \let\@elt\relax%
    \count@#1\relax %
    \advance\count@\m@ne%
    \@whilenum\count@<#2\do{%
@@ -542,7 +546,7 @@
          \@tempcntb\count@%
       \else%
          \ifnum\@tempcnta>\z@%
-            \edef\@linelist{\@linelist\@elt@udnote{\the\@tempcnta}{\the\@tempcntb}}%
+            \edef\@linelist{\@linelist\@elt{\the\@tempcnta}{\the\@tempcntb}}%
          \fi%
          \@tempcnta\count@ \@tempcntb\count@%
          \let\@currpage\@thispage%
@@ -551,8 +555,8 @@
          \advance\@tempdima -\@UNDATA@yfuzz\relax%
          \advance\@tempdimb  \@UNDATA@yfuzz\relax%
       \fi}%
-   \edef\@linelist{\@linelist\@elt@udnote{\the\@tempcnta}{\the\@tempcntb}}%
-   \let\@elt@udnote\@check@undernotedata@elt%
+   \edef\@linelist{\@linelist\@elt{\the\@tempcnta}{\the\@tempcntb}}%
+   \let\@elt\@check@undernotedata@elt%
    \@linelist%
 }
 
