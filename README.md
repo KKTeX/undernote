@@ -11,8 +11,8 @@
 `modernruler` provides enhanced ruler commands, including `\mruleth`, `\mruletv`, and `\undernote`. These commands are designed to be more flexible than standard LaTeX rules, supporting key-value options for styling and full compatibility with vertical writing modes.<br>
 `modernruler` は、標準の罫線コマンドを拡張した `\mruleth`、`\mruletv`、および `\undernote` を提供します。色やスタイルの指定をキー値オプションで行える柔軟性を持ち、縦書き環境にも完全に対応しています。
 
-- **Version**: 1.1.0
-- **Date**: 2025-01-06
+- **Version**: 1.3.0
+- **Date**: 2025-01-26
 - **Author**: Kosei Kawaguchi (a.k.a. KKTeX)
 - **License**: MIT
 - **Repository**: [https://github.com/KKTeX/modernruler](https://github.com/KKTeX/modernruler)
@@ -69,31 +69,3 @@ This package only supports LuaLaTeX.<br>
 
 For detailed usage and examples, please refer to the documentation and source files.<br>
 具体的な使用方法や例については、ドキュメントやソースファイルを参照してください。
-
----
-
-## License / ライセンス
-
-This package is licensed under the **MIT License**.<br>
-本パッケージは **MITライセンス** のもとで公開されています。
-
-```text
-Copyright (c) 2025-2026 Kosei Kawaguchi
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.

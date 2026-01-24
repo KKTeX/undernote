@@ -328,7 +328,7 @@ When you want to change some settings in the middle of the document, you can use
     \verb|\SetUNoteRuleHShift|    & dim  & 1.5mm                & Sets the horizontal offset of the vertical rule \\
     \verb|\SetUNoteRuleHSize|     & dim  & 1.5mm                & Sets the length of the horizontal rule \\
     \verb|\SetUNotePos|           & dim  & 3mm                  & Sets the minimum vertical line length \\
-    \verb|\SetUNoteShift|         & dim  & 4mm                  & Sets the vertical shift amount per level \\
+    \verb|\SetUNoteShift|         & dim  & 1mm                  & Sets the vertical shift amount per level \\
     \verb|\SetUNoteSep|           & dim  & 2em                  & Sets the minimum horizontal separation between notes \\
     \verb|\SetUNoteOverHang|      & dim  & 3em                  & Sets the overhang length for parbox notes \\
     \verb|\SetUNoteParstyle|      & int  & 0                    & Updates the border style and drawing logic \\
@@ -433,7 +433,7 @@ Released under the MIT License.
   \NewDocumentCommand{\SetUNotePos}{O{3mm}}{%
     \def\notepos@internal@undernote{#1}%
   }
-  \NewDocumentCommand{\SetUNoteShift}{O{4mm}}{%
+  \NewDocumentCommand{\SetUNoteShift}{O{1mm}}{%
     \def\noteshift@internal@undernote{#1}%
   }
   \NewDocumentCommand{\SetUNoteSep}{O{2em}}{%
