@@ -90,7 +90,7 @@
 
 \title{\texttt{modernruler} Package Documentation}
 \author{Kosei Kawaguchi a.k.a. KKTeX}
-\date{Version 1.2.0 (2025/01/26)}
+\date{Version 1.3.0 (2025/01/26)}
 
 \begin{document}
 \begin{titlepage}
@@ -239,6 +239,7 @@ The outputs are as follows:
 \end{OutPut}
 
 \subsection{\texttt{\textbackslash undernote}}
+\subsubsection{Basic Usage}
 This commands provides underlined \undernote{annotation}{Like this.}. There is some optional parameters which adjust the position of the annotation text.
 
 \begin{SourceCode}{Intput}{TeX}
@@ -335,14 +336,15 @@ When you want to change some settings in the middle of the document, you can use
   \end{tabular}
 \end{center}\bigskip
 
+\subsubsection{Additional Description}
 You can use the command in mathmode.
 
 \begin{SourceCode}{Intput}{TeX}
-  \[\undernote{x + y}{In the equation envriomnemt.} = \undernote{k}{No problem.}\]
+  \[\undernote{x + y}{In the equation envriomnemt.} = \undernote{\frac{a}{b}}{No problem.}\]
 \end{SourceCode}
 
 \begin{OutPut}{Output}
-  \[\undernote{x + y}{In the equation envriomnemt.} = \undernote{k}{No problem.}\]
+  \[\undernote{x + y}{In the equation envriomnemt.} = \undernote{\frac{a}{b}}{No problem.}\]
 \end{OutPut}
 
 \section{License}
@@ -352,13 +354,13 @@ Released under the MIT License.
 \begin{itemize}
   \item \textbf{v1.0.0} --- Initial public release.
   \item \textbf{v1.1.0} --- Add a fallback for \verb|\zw| and \verb|\ltjgetparameter|.
-  \item \textbf{v1.2.0} --- Fixed a bug which occurs when \verb|\undernote| command is used in mathmode. The bug was caused my misreplacement of \verb|\@elt|.
+  \item \textbf{v1.3.0} --- Fixed a bug which occurs when \verb|\undernote| command is used in mathmode. The bug was caused my misreplacement of \verb|\@elt|.
 \end{itemize}
 
 \section{Source Code}
 \begin{lstlisting}
   \NeedsTeXFormat{LaTeX2e}
-  \ProvidesPackage{modernruler}[2026/01/26, Version 1.2.0]
+  \ProvidesPackage{modernruler}[2026/01/26, Version 1.3.0]
 
   %%% parameters
   \unless\ifdefined\zw
@@ -624,14 +626,14 @@ Released under the MIT License.
   }{#2}
   \DeclareTotalTCBox{\NoframeBox@undernote}{ O{} +m }{%
     on line,arc=0pt,
-    sharp corners,boxsep=0mm,
-    left=.3mm,right=.3mm,top=0.3mm,bottom=0.3mm,
+    sharp corners,boxsep=-.5mm,
+    left=.8mm,right=.8mm,top=0.3mm,bottom=0.3mm,
     colback=white,colframe=white,
     enhanced,before={\hspace*{-.1722\zw}},
     #1
   }{#2}
 
-  \newlength{\undernote@textlen@tempo}
+  \newlength{\undernote@textlen@tempo}\newlength{\undernote@textdepth@tempo}
 
   \NewDocumentCommand{\wrap@undernote@par@styleA}{ +m }{%
   {%
@@ -692,42 +694,33 @@ Released under the MIT License.
         %%% #4: 注釈
         %%% #5: どういう線にするか
     \def\key@undernote@ruler{#5}%
-    \settowidth{\undernote@textlen@tempo}{#3}%
+    % \settowidth{\undernote@textlen@tempo}{#3}%
     \begingroup%
     \stepcounter{undernote@id}%
     \ifmmode%
+        % \settowidth{\undernote@textlen@tempo}{\ensuremath{#3}}%
         \@note@save@conters%
         \savepos%
-        \@math@undernote{#2}{#3}{%
-          \ifnum\ltjgetparameter{direction}=4%
-              \begin{varwidth}[t]{\maxdimen}%
-                \IfBooleanTF{#1}{\wrap@undernote@par{#4}}{\wrap@undernote{#4}}%
-              \end{varwidth}%
-          \else%
-              \raisebox{.38\zw}{%
-                \begin{varwidth}[t]{\maxdimen}%
-                    \IfBooleanTF{#1}{\wrap@undernote@par{#4}}{\wrap@undernote{#4}}%
-                \end{varwidth}%
-              }%
-          \fi%
-        }%
+        \expandafter\@math@undernote
     \else%
+        \settowidth{\undernote@textlen@tempo}{#3}%
         \leavevmode%
         \savepos%
-        \@text@undernote{#2}{#3}{%
-          \ifnum\ltjgetparameter{direction}=4%
+        \expandafter\@text@undernote
+    \fi%
+    {#2}{#3}{%
+        \ifnum\ltjgetparameter{direction}=4%
+          \begin{varwidth}[t]{\maxdimen}%
+              \IfBooleanTF{#1}{\wrap@undernote@par{#4}}{\wrap@undernote{#4}}%
+          \end{varwidth}%
+        \else%
+          \raisebox{.38\zw}{%
               \begin{varwidth}[t]{\maxdimen}%
                 \IfBooleanTF{#1}{\wrap@undernote@par{#4}}{\wrap@undernote{#4}}%
               \end{varwidth}%
-          \else%
-              \raisebox{.38\zw}{%
-                \begin{varwidth}[t]{\maxdimen}%
-                    \IfBooleanTF{#1}{\wrap@undernote@par{#4}}{\wrap@undernote{#4}}%
-                \end{varwidth}%
-              }%
-          \fi%
-        }%
-    \fi%
+          }%
+        \fi%
+    }%
     \endgroup%
   }
 
@@ -745,11 +738,19 @@ Released under the MIT License.
 
   % 数式モードの場合への対応
   \def\@math@undernote#1#2#3{%
-    \mathchoice
-        {\@note@restore@counters\@text@undernote{#1}{\m@th$\displaystyle #2$}{#3}}%
-        {\@note@restore@counters\@text@undernote{#1}{\m@th$\textstyle #2$}{#3}}%
-        {\@note@restore@counters\@text@undernote{#1}{\m@th$\scriptstyle #2$}{#3}}%
-        {\@note@restore@counters\@text@undernote{#1}{\m@th$\scriptscriptstyle #2$}{#3}}%
+    \mathchoice{%
+        \settowidth{\undernote@textlen@tempo}{\m@th$\displaystyle #2$}%
+        \@note@restore@counters\@text@undernote{#1}{\m@th$\displaystyle #2$}{#3}%
+    }{%
+        \settowidth{\undernote@textlen@tempo}{\m@th$\textstyle #2$}%
+        \@note@restore@counters\@text@undernote{#1}{\m@th$\textstyle #2$}{#3}%
+    }{%
+        \settowidth{\undernote@textlen@tempo}{\m@th$\scriptstyle #2$}%
+        \@note@restore@counters\@text@undernote{#1}{\m@th$\scriptstyle #2$}{#3}%
+    }{%
+        \settowidth{\undernote@textlen@tempo}{\m@th$\scriptscriptstyle #2$}%
+        \@note@restore@counters\@text@undernote{#1}{\m@th$\scriptscriptstyle #2$}{#3}%
+    }%
   }
 
   % 注釈の内部実装
@@ -796,6 +797,7 @@ Released under the MIT License.
                 \write16{}% 書き出し不可の場合、何もしない
               \fi%
           \endgroup%
+          \vskip1pt%
           \hline@undernote@par% アンダーライン
           \hbox{\notesize@internal@undernote% 
                 % サイズ指定

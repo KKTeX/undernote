@@ -25,7 +25,7 @@
 
 
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesPackage{modernruler}[2026/01/26, Version 1.2.0]
+\ProvidesPackage{modernruler}[2026/01/26, Version 1.3.0]
 
 %%% parameters
 \unless\ifdefined\zw
@@ -359,15 +359,16 @@
       %%% #4: 注釈
       %%% #5: どういう線にするか
    \def\key@undernote@ruler{#5}%
-   \settowidth{\undernote@textlen@tempo}{#3}%
-   \settodepth{\undernote@textdepth@tempo}{#3}%
+   % \settowidth{\undernote@textlen@tempo}{#3}%
    \begingroup%
    \stepcounter{undernote@id}%
    \ifmmode%
+      % \settowidth{\undernote@textlen@tempo}{\ensuremath{#3}}%
       \@note@save@conters%
       \savepos%
       \expandafter\@math@undernote
    \else%
+      \settowidth{\undernote@textlen@tempo}{#3}%
       \leavevmode%
       \savepos%
       \expandafter\@text@undernote
@@ -402,11 +403,20 @@
 
 % 数式モードの場合への対応
 \def\@math@undernote#1#2#3{%
-   \mathchoice
-      {\@note@restore@counters\@text@undernote{#1}{\m@th$\displaystyle #2$}{#3}}%
-      {\@note@restore@counters\@text@undernote{#1}{\m@th$\textstyle #2$}{#3}}%
-      {\@note@restore@counters\@text@undernote{#1}{\m@th$\scriptstyle #2$}{#3}}%
-      {\@note@restore@counters\@text@undernote{#1}{\m@th$\scriptscriptstyle #2$}{#3}}}
+   \mathchoice{%
+      \settowidth{\undernote@textlen@tempo}{\m@th$\displaystyle #2$}%
+      \@note@restore@counters\@text@undernote{#1}{\m@th$\displaystyle #2$}{#3}%
+   }{%
+      \settowidth{\undernote@textlen@tempo}{\m@th$\textstyle #2$}%
+      \@note@restore@counters\@text@undernote{#1}{\m@th$\textstyle #2$}{#3}%
+   }{%
+      \settowidth{\undernote@textlen@tempo}{\m@th$\scriptstyle #2$}%
+      \@note@restore@counters\@text@undernote{#1}{\m@th$\scriptstyle #2$}{#3}%
+   }{%
+      \settowidth{\undernote@textlen@tempo}{\m@th$\scriptscriptstyle #2$}%
+      \@note@restore@counters\@text@undernote{#1}{\m@th$\scriptscriptstyle #2$}{#3}%
+   }%
+}
 
 % 注釈の内部実装
 \long\def\@text@undernote#1#2#3{%
