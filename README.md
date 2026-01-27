@@ -12,7 +12,7 @@
 `modernruler` は、標準の罫線コマンドを拡張した `\mruleth`、`\mruletv`、および `\undernote` を提供します。色やスタイルの指定をキー値オプションで行える柔軟性を持ち、縦書き環境にも完全に対応しています。
 
 - **Version**: 1.3.1
-- **Date**: 2025-01-26
+- **Date**: 2026-01-26
 - **Author**: Kosei Kawaguchi (a.k.a. KKTeX)
 - **License**: MIT
 - **Repository**: [https://github.com/KKTeX/modernruler](https://github.com/KKTeX/modernruler)
