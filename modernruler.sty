@@ -228,47 +228,47 @@
 
 % 垂直方向：2色点線
 \NewDocumentCommand{\mruletv}{O{}}
-  {
-    \group_begin:
-    \keys_set:nn { modernrule } { #1 }
-    
-    \bool_if:NTF \l_mrule_dash_bool
-      {
-        % dash=true: 2色交互の垂直点線
-        \dim_set:Nn \l__mrule_tmp_remaining_dim { \l_mrule_height_dim }
-        \vbox:n
-          {
-            \dim_while_do:nNnn { \l__mrule_tmp_remaining_dim } > { 0pt }
-              {
-                \dim_compare:nNnTF { \l__mrule_tmp_remaining_dim } > { \l_mrule_dash_len_dim }
-                  {
-                    % メイン色
-                    {\color{\l_mrule_color_tl} \hrule width \l_mrule_width_dim height \l_mrule_dash_len_dim}
-                    \dim_sub:Nn \l__mrule_tmp_remaining_dim { \l_mrule_dash_len_dim }
-                    
-                    % ギャップ色
-                    \dim_compare:nNnTF { \l__mrule_tmp_remaining_dim } > { \l_mrule_gap_len_dim }
-                      {
-                        {\color{\l_mrule_gap_color_tl} \hrule width \l_mrule_width_dim height \l_mrule_gap_len_dim}
-                        \dim_sub:Nn \l__mrule_tmp_remaining_dim { \l_mrule_gap_len_dim }
-                      }
-                      {
-                        {\color{\l_mrule_gap_color_tl} \hrule width \l_mrule_width_dim height \l__mrule_tmp_remaining_dim}
-                        \dim_set:Nn \l__mrule_tmp_remaining_dim { 0pt }
-                      }
-                  }
-                  {
-                    {\color{\l_mrule_color_tl} \hrule width \l_mrule_width_dim height \l__mrule_tmp_remaining_dim}
-                    \dim_set:Nn \l__mrule_tmp_remaining_dim { 0pt }
-                  }
-              }
-          }
-      }
-      {
-        \vbox:n { {\color{\l_mrule_color_tl} \hrule width \l_mrule_width_dim height \l_mrule_height_dim} }
-      }
-    \group_end:
-  }
+{
+   \group_begin:
+   \keys_set:nn { modernrule } { #1 }
+
+   \bool_if:NTF \l_mrule_dash_bool
+   {
+      % dash=true: 2色交互の垂直点線
+      \dim_set:Nn \l__mrule_tmp_remaining_dim { \l_mrule_height_dim }
+      \vbox:n
+         {
+         \dim_while_do:nNnn { \l__mrule_tmp_remaining_dim } > { 0pt }
+            {
+               \dim_compare:nNnTF { \l__mrule_tmp_remaining_dim } > { \l_mrule_dash_len_dim }
+               {
+                  % メイン色
+                  {\color{\l_mrule_color_tl} \hrule width \l_mrule_width_dim height \l_mrule_dash_len_dim}
+                  \dim_sub:Nn \l__mrule_tmp_remaining_dim { \l_mrule_dash_len_dim }
+                  
+                  % ギャップ色
+                  \dim_compare:nNnTF { \l__mrule_tmp_remaining_dim } > { \l_mrule_gap_len_dim }
+                     {
+                     {\color{\l_mrule_gap_color_tl} \hrule width \l_mrule_width_dim height \l_mrule_gap_len_dim}
+                     \dim_sub:Nn \l__mrule_tmp_remaining_dim { \l_mrule_gap_len_dim }
+                     }
+                     {
+                     {\color{\l_mrule_gap_color_tl} \hrule width \l_mrule_width_dim height \l__mrule_tmp_remaining_dim}
+                     \dim_set:Nn \l__mrule_tmp_remaining_dim { 0pt }
+                     }
+               }
+               {
+                  {\color{\l_mrule_color_tl} \hrule width \l_mrule_width_dim height \l__mrule_tmp_remaining_dim}
+                  \dim_set:Nn \l__mrule_tmp_remaining_dim { 0pt }
+               }
+            }
+         }
+   }
+   {
+      \vbox:n { {\color{\l_mrule_color_tl} \hrule width \l_mrule_width_dim height \l_mrule_height_dim} }
+   }
+   \group_end:
+}
 \ExplSyntaxOff
 %%%
 
