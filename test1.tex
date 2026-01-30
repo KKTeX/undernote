@@ -1,0 +1,55 @@
+\documentclass[a4paper,11pt,twocolumn]{ltjsarticle}
+
+\usepackage{luacode,luatexbase}
+\usepackage[no-math,deluxe,expert,haranoaji]{luatexja-preset}
+
+%%% for debug
+\usepackage{nodetree}
+\NodetreeRegisterCallback{:post_linebreak_filter:}
+%%%
+
+\newcommand{\luline}[1]{\bgroup\attribute100=100 #1\egroup}
+
+\directlua{%
+local setrcolor = node.new("whatsit","pdf_colorstack")
+setrcolor.data = "1.0 1.0 0.45 rg"
+local resetcolor = node.new("whatsit","pdf_colorstack")
+resetcolor.data = "0 0 0 rg"
+
+local ulines = function (head, group)
+  for list in node.traverse_id(node.id("hlist"), head) do
+    for item in node.traverse(list.head) do
+      if item.id == node.id("glyph") or item.id == node.id("glue") then
+        if node.has_attribute(item, 100) == 100 then
+          local r = node.new("rule")
+          local k = node.new("kern")
+          r.height = 100000
+          r.width = item.width
+          k.kern = -item.width
+          if item.id == node.id("glue") then 
+            r.width = r.width + item.stretch + item.shrink + 50000
+            k.kern = k.kern - item.stretch - item.shrink - 50000
+          end
+          if item.width > 0 then
+          list.head, new = node.insert_before(list.head, item, node.copy(setrcolor))
+          list.head, new = node.insert_before(list.head, item, r)
+          list.head, new = node.insert_before(list.head, item, node.copy(resetcolor))
+          list.head, new = node.insert_before(list.head, item, k)
+          end
+          item = item.next
+        end
+      end
+     end
+   end
+   return head
+end
+luatexbase.add_to_callback ("post_linebreak_filter",ulines,"pushftn")
+}
+
+\begin{document}
+
+Hell\luline{o W}orld! Hello World! Hello World! Hello World! Hello World! \luline{Hello World! Hello World! Hello World! Hello World! Hello World! Hello World! }Hello World! Hello World! Hello World! 
+
+いろはにほへといろはにほへといろはにほへといろはにほへといろはにほへと\luline{いろはにほへといろはにほへといろはにほへといろはにほへと}いろはにほへといろはにほへといろはにほへといろはにほへと
+
+\end{document}

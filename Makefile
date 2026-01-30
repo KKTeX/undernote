@@ -1,7 +1,8 @@
 # ----- setting ------
 SAMPLE_TARGET = modernruler-sample
 DOC_TARGET = modernruler-doc
-TEST_TARGET = test
+TEST_TARGET_0 = test0
+TEST_TARGET_1 = test1
 RC     = .latexmkrc
 
 
@@ -14,8 +15,11 @@ builddoc:
 	$(MAKE) clean
 
 # compile
-buildtest:
-	latexmk -r $(RC) $(TEST_TARGET).tex
+buildtest0:
+	latexmk -r $(RC) $(TEST_TARGET_0).tex
+	$(MAKE) clean
+buildtest1:
+	latexmk -r $(RC) $(TEST_TARGET_1).tex
 	$(MAKE) clean
 
 # cleaning except for PDF
