@@ -639,13 +639,14 @@
 \ExplSyntaxOn
 \dim_new:N \l_mdfbox_boxdepth_lower_dim
 \dim_new:N \l_mdfbox_boxdepth_upper_dim
+\dim_new:N \l_mdfbox_boxheight_lower_dim
+\dim_new:N \l_mdfbox_boxheight_upper_dim
 \box_new:N \l_mdfbox_content_box
 \int_new:N \g_mdfbox_uline_id_int % global!
 \int_new:N \g_mdfbox_oline_id_int % global!
 
 \cs_new:Nn \__mdfbox_uline:nn {% internal cs
    \int_gincr:N \g_mdfbox_uline_id_int
-
 
    \exp_args:Nc \newunderlinetype { __beginMdFbULS \int_use:N \g_mdfbox_uline_id_int }
    {
@@ -657,18 +658,39 @@
             #1]
       }
    }
+
    \use:c { __beginMdFbULS \int_use:N \g_mdfbox_uline_id_int } { #2 }
 }
 
-\cs_new:Nn \__mdbfbox_oline:nn {% internal cs
+\cs_new:Nn \__mdfbox_oline:nn {% internal cs
+   \int_gincr:N \g_mdfbox_oline_id_int
+
+   \exp_args:Nc \newunderlinetype { __beginMdFbOLS \int_use:N \g_mdfbox_oline_id_int }
+   {
+      \leaders \hbox:n {
+         \mruleth[
+            width=.01\zw, 
+            depth=\l_mdfbox_boxheight_lower_dim, 
+            height=\l_mdfbox_boxheight_upper_dim, 
+            #1]
+      }
+   }
+
+   \use:c { __beginMdFbOLS \int_use:N \g_mdfbox_oline_id_int } { #2 }
 }
 
 \NewDocumentCommand{\mdbreakfbox}{ O{} m }{
    \hbox_set:Nn \l_mdfbox_content_box { #2 }
    \dim_set:Nn \l_mdfbox_boxdepth_lower_dim { \box_dp:N \l_mdfbox_content_box + \fboxrule + \fboxsep }
    \dim_set:Nn \l_mdfbox_boxdepth_upper_dim { - \l_mdfbox_boxdepth_lower_dim + \fboxrule }
+   \dim_set:Nn \l_mdfbox_boxheight_lower_dim { - \box_ht:N \l_mdfbox_content_box - \fboxsep }
+   \dim_set:Nn \l_mdfbox_boxheight_upper_dim { - \l_mdfbox_boxheight_lower_dim + \fboxrule }
 
-   \__mdfbox_uline:nn {#1}{#2}
+   \__mdfbox_uline:nn {#1} {
+      \__mdfbox_oline:nn {#1} {
+         #2
+      }
+   }
 }
 \ExplSyntaxOff
 %%%
